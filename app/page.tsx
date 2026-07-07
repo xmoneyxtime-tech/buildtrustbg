@@ -52,21 +52,24 @@ export default function Home() {
   ];
 
   return (
-    <div style={{
-      fontFamily: "Arial",
-      background: "#0f172a",
-      color: "white",
-      minHeight: "100vh"
-    }}>
-
+    <div
+      style={{
+        fontFamily: "Arial",
+        background: "#0f172a",
+        color: "white",
+        minHeight: "100vh",
+      }}
+    >
       {/* HEADER */}
-      <header style={{
-        padding: "20px 40px",
-        borderBottom: "1px solid #1e293b",
-        display: "flex",
-        justifyContent: "space-between"
-      }}>
-        <h2 style={{ color: "#f59e0b" }}>🏗️ BuildTrustBG AI</h2>
+      <header
+        style={{
+          padding: "20px 40px",
+          borderBottom: "1px solid #1e293b",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <h2 style={{ color: "#f59e0b" }}>🏗️ BuildTrustBG</h2>
       </header>
 
       {/* HERO */}
@@ -76,25 +79,30 @@ export default function Home() {
         </h1>
 
         <p style={{ opacity: 0.7 }}>
-          AI асистент за ремонти и строителство в България
+          Намери проверени строителни фирми за ремонт и строителство в България
         </p>
       </div>
 
       {/* CATEGORIES */}
-      <div style={{
-        padding: "30px",
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-        gap: "15px"
-      }}>
+      <div
+        style={{
+          padding: "30px",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: "15px",
+        }}
+      >
         {categories.map((item, i) => (
-          <div key={i} style={{
-            background: "#1e293b",
-            padding: "20px",
-            borderRadius: "12px",
-            border: "1px solid #334155",
-            textAlign: "center"
-          }}>
+          <div
+            key={i}
+            style={{
+              background: "#1e293b",
+              padding: "20px",
+              borderRadius: "12px",
+              border: "1px solid #334155",
+              textAlign: "center",
+            }}
+          >
             {item}
           </div>
         ))}
@@ -106,19 +114,24 @@ export default function Home() {
           Подкатегории
         </h2>
 
-        <div style={{
-          marginTop: "20px",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "10px"
-        }}>
+        <div
+          style={{
+            marginTop: "20px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "10px",
+          }}
+        >
           {subcategories.map((item, i) => (
-            <div key={i} style={{
-              background: "#111827",
-              padding: "12px",
-              borderRadius: "8px",
-              border: "1px solid #1e293b"
-            }}>
+            <div
+              key={i}
+              style={{
+                background: "#111827",
+                padding: "12px",
+                borderRadius: "8px",
+                border: "1px solid #1e293b",
+              }}
+            >
               {item}
             </div>
           ))}
@@ -126,19 +139,28 @@ export default function Home() {
       </div>
 
       {/* AI SECTION */}
-      <div style={{
-        padding: "50px 20px",
-        textAlign: "center",
-        background: "#0b1220"
-      }}>
-        <h2 style={{ color: "#f59e0b" }}>🤖 AI Асистент</h2>
+      <div
+        style={{
+          padding: "50px 20px",
+          textAlign: "center",
+          background: "#0b1220",
+        }}
+      >
+        <h2 style={{ color: "#f59e0b" }}>AI Асистент</h2>
 
-        <div style={{
-          marginTop: "20px",
-          display: "flex",
-          justifyContent: "center",
-          gap: "10px"
-        }}>
+        <p style={{ opacity: 0.7, marginBottom: "20px" }}>
+          AI асистентът ще ви помогне да намерите подходящата фирма и ще отговори
+          на въпросите ви.
+        </p>
+
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+          }}
+        >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -149,7 +171,7 @@ export default function Home() {
               borderRadius: "8px",
               border: "1px solid #334155",
               background: "#111827",
-              color: "white"
+              color: "white",
             }}
           />
 
@@ -161,7 +183,7 @@ export default function Home() {
               border: "none",
               borderRadius: "8px",
               cursor: "pointer",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             {loading ? "..." : "Питай"}
@@ -169,16 +191,18 @@ export default function Home() {
         </div>
 
         {answer && (
-          <div style={{
-            marginTop: "25px",
-            maxWidth: "600px",
-            marginLeft: "auto",
-            marginRight: "auto",
-            background: "#111827",
-            padding: "15px",
-            borderRadius: "10px",
-            border: "1px solid #f59e0b"
-          }}>
+          <div
+            style={{
+              marginTop: "25px",
+              maxWidth: "600px",
+              marginLeft: "auto",
+              marginRight: "auto",
+              background: "#111827",
+              padding: "15px",
+              borderRadius: "10px",
+              border: "1px solid #f59e0b",
+            }}
+          >
             {answer}
           </div>
         )}
