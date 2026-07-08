@@ -1,0 +1,36 @@
+export function GoldVerificationCard() {
+  const benefits = [
+    "Значка за проверена фирма",
+    "Повишена надеждност",
+    "Приоритет в резултатите",
+    "Видимост за клиенти",
+  ];
+
+  return (
+    <div className="rounded-[28px] border border-slate-200/80 bg-white p-8 shadow-[0_18px_50px_-24px_rgba(15,76,129,0.16)]">
+      <div className="flex items-start justify-between">
+        <div>
+          <span className="inline-flex rounded-full border border-[#0F4C81]/25 bg-[#F0F4F9] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#0F4C81]">
+            Gold Verification
+          </span>
+          <h3 className="mt-4 text-2xl font-semibold text-slate-900">Проверена фирма</h3>
+          <p className="mt-3 text-slate-700">Покажи на клиентите, че си доверена и проверена фирма.</p>
+        </div>
+        <div className="text-4xl">🛡️</div>
+      </div>
+
+      <div className="mt-6 space-y-2">
+        {benefits.map((benefit) => (
+          <div key={benefit} className="flex items-center gap-3 text-sm text-slate-700">
+            <span className="text-[#0F4C81]">✓</span>
+            <span>{benefit}</span>
+          </div>
+        ))}
+      </div>
+
+      <button className="mt-6 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#0F4C81] px-6 text-sm font-semibold text-white transition hover:bg-[#0B3D67]">
+        Кандидатствай
+      </button>
+    </div>
+  );
+}

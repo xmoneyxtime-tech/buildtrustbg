@@ -1,16 +1,6 @@
 import Link from "next/link";
-import { AppShell, Button, FeatureCard, SectionTitle } from "./components/ui";
-
-const categories = [
-  "Строителство на къщи",
-  "Основни ремонти",
-  "Покриви",
-  "Изолации",
-  "Електро",
-  "ВиК",
-  "Архитекти",
-  "Интериорен дизайн",
-];
+import { AppShell, Button, FeatureCard, Footer, SectionTitle } from "./components/ui";
+import { cities, featuredCategories, serviceOptions } from "./lib/mock-data";
 
 const trustFeatures = [
   {
@@ -36,10 +26,22 @@ const trustFeatures = [
 ];
 
 const steps = [
-  "Изберете услуга",
-  "Изберете град",
-  "Сравнете фирмите",
-  "Свържете се с избраната компания",
+  {
+    title: "Изберете услуга",
+    description: "Открийте подходяща категория за проекта си.",
+  },
+  {
+    title: "Изберете град",
+    description: "Филтрирайте по населено място и регион.",
+  },
+  {
+    title: "Сравнете фирмите",
+    description: "Сравнявайте услуги, отзиви и опит.",
+  },
+  {
+    title: "Свържете се с избраната фирма",
+    description: "Изпратете заявка директно към подходящия изпълнител.",
+  },
 ];
 
 export default function Home() {
@@ -59,38 +61,52 @@ export default function Home() {
                 BuildTrustBG Ви помага лесно да откриете проверени строителни фирми, да сравните услуги, проекти и клиентски отзиви, за да изберете най-подходящия изпълнител за Вашия проект.
               </p>
 
-              <div className="mt-8 rounded-[24px] border border-slate-200/80 bg-white p-6 shadow-[0_20px_70px_-30px_rgba(15,76,129,0.24)] sm:p-7">
-                <h2 className="text-xl font-semibold text-slate-900">Започнете търсенето</h2>
-                <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="mt-8 rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_24px_80px_-30px_rgba(15,76,129,0.24)] sm:p-7">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-xl font-semibold text-slate-900">Започнете търсенето</h2>
+                    <p className="mt-1 text-sm text-slate-600">Търсете по услуга, град и готовност за контакт.</p>
+                  </div>
+                  <div className="rounded-full border border-[#0F4C81]/10 bg-[#F8FAFC] px-3 py-2 text-sm font-semibold text-[#0F4C81]">
+                    Премиум търсене
+                  </div>
+                </div>
+
+                <div className="mt-6 grid gap-4 xl:grid-cols-[1.1fr_1.1fr_auto]">
                   <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-slate-700">Каква услуга търсите?</span>
-                    <select defaultValue="" className="w-full rounded-2xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 text-sm text-slate-700 outline-none focus:border-[#0F4C81]">
+                    <span className="mb-2 block text-sm font-medium text-slate-700">Услуга</span>
+                    <select defaultValue="" className="w-full rounded-2xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 text-sm text-slate-700 outline-none transition focus:border-[#0F4C81] focus:bg-white">
                       <option value="" disabled>
                         Изберете услуга
                       </option>
-                      <option>Строителство на къщи</option>
-                      <option>Основни ремонти</option>
-                      <option>Покриви</option>
-                      <option>Изолации</option>
+                      {serviceOptions.map((service) => (
+                        <option key={service.value} value={service.value}>
+                          {service.label}
+                        </option>
+                      ))}
                     </select>
                   </label>
                   <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-slate-700">В кой град?</span>
-                    <select defaultValue="" className="w-full rounded-2xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 text-sm text-slate-700 outline-none focus:border-[#0F4C81]">
+                    <span className="mb-2 block text-sm font-medium text-slate-700">Град</span>
+                    <select defaultValue="" className="w-full rounded-2xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 text-sm text-slate-700 outline-none transition focus:border-[#0F4C81] focus:bg-white">
                       <option value="" disabled>
                         Изберете град
                       </option>
-                      <option>София</option>
-                      <option>Пловдив</option>
-                      <option>Варна</option>
-                      <option>Бургас</option>
+                      {cities.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
                     </select>
                   </label>
+                  <div className="flex items-end">
+                    <Button className="w-full justify-center bg-[#F58220] hover:bg-[#E36F00] xl:w-[170px]">
+                      Търси
+                    </Button>
+                  </div>
                 </div>
+
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <Button className="w-full justify-center bg-[#F58220] hover:bg-[#E36F00] md:w-auto">
-                    Намери фирма
-                  </Button>
                   <Link href="/companies" className="inline-flex h-12 items-center justify-center rounded-[12px] border border-[#0F4C81]/20 bg-white px-6 text-sm font-medium text-[#0F4C81] transition hover:border-[#0F4C81]/40 hover:bg-[#F8FAFC]">
                     Разгледай компании
                   </Link>
@@ -173,28 +189,51 @@ export default function Home() {
           title="Открийте услуги по категории"
           description="Разгледайте най-търсените услуги и намерете подходящ изпълнител за вашия проект."
         />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {categories.map((category) => (
-            <div key={category} className="rounded-[20px] border border-slate-200/80 bg-white px-5 py-4 text-sm font-medium text-slate-700 shadow-[0_12px_40px_-24px_rgba(15,76,129,0.2)]">
-              {category}
+        <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {featuredCategories.map((category) => (
+            <div
+              key={category.title}
+              className="group rounded-[24px] border border-slate-200/80 bg-white p-6 shadow-[0_18px_60px_-32px_rgba(15,76,129,0.2)] transition duration-300 hover:-translate-y-1 hover:border-[#0F4C81]/20 hover:shadow-[0_24px_80px_-30px_rgba(15,76,129,0.28)]"
+            >
+              <div className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${category.accent}`}>
+                <span className="text-2xl">{category.icon}</span>
+              </div>
+              <h3 className="mt-5 text-lg font-semibold text-slate-900">{category.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-600">{category.description}</p>
+              <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0F4C81]">
+                Виж фирми
+                <span className="transition group-hover:translate-x-1">↗</span>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
       <section id="companies" className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-10">
-        <SectionTitle
-          eyebrow="Избрани компании"
-          title="Площ за фирми, които ще бъдат добавени по-късно"
-          description="Тази секция остава празна като placeholder, докато не бъдат добавени реални профили и данни."
-        />
-        <div className="mt-10 grid gap-6 lg:grid-cols-3">
-          {[1, 2, 3].map((item) => (
-            <div key={item} className="rounded-[24px] border border-dashed border-slate-300 bg-[#F8FAFC] p-8 text-center text-slate-600">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">Placeholder</p>
-              <p className="mt-3 text-base leading-7">Тук ще се показват фирми след добавяне на реални профили.</p>
+        <div className="rounded-[32px] border border-slate-200/80 bg-[linear-gradient(135deg,_#ffffff_0%,_#f8fbff_100%)] px-8 py-14 shadow-[0_24px_80px_-32px_rgba(15,76,129,0.24)] sm:px-10 lg:px-14">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex rounded-full border border-[#F58220]/25 bg-[#FFF7EE] px-3 py-1 text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">
+              Проверени строителни фирми
+            </span>
+            <h2 className="mt-6 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+              BuildTrustBG изгражда мрежа от проверени строителни компании в България.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-slate-700 sm:text-lg">
+              В момента извършваме проверка на първите кандидатстващи фирми.
+            </p>
+
+            <div className="mt-8 rounded-[28px] border border-[#F58220]/20 bg-white p-8 shadow-[0_24px_80px_-36px_rgba(15,76,129,0.24)] sm:p-10">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FFF7EE] text-3xl shadow-sm">
+                🛡️
+              </div>
+              <p className="mt-6 text-xl font-semibold text-slate-900">
+                Първите проверени фирми ще се появят скоро.
+              </p>
+              <Link href="/register" className="mt-8 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#F58220] px-6 text-sm font-semibold text-white transition hover:bg-[#E36F00]">
+                Регистрирай фирма
+              </Link>
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
@@ -204,11 +243,22 @@ export default function Home() {
           title="Прост процес от четири стъпки"
           description="Открийте, сравнете и се свържете с подходяща строителна фирма за вашия проект."
         />
-        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-10 grid gap-4 lg:grid-cols-4">
           {steps.map((step, index) => (
-            <div key={step} className="rounded-[24px] border border-slate-200/80 bg-white p-6 shadow-[0_16px_50px_-28px_rgba(15,76,129,0.2)]">
-              <div className="text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">Стъпка {index + 1}</div>
-              <p className="mt-3 text-lg font-semibold text-slate-900">{step}</p>
+            <div key={step.title} className="rounded-[24px] border border-slate-200/80 bg-white p-6 shadow-[0_16px_50px_-28px_rgba(15,76,129,0.2)]">
+              <div className="flex items-center justify-between">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0F4C81] text-sm font-semibold text-white">
+                  {index + 1}
+                </div>
+                {index < steps.length - 1 ? (
+                  <span className="hidden text-2xl text-[#F58220] lg:block">↓</span>
+                ) : null}
+              </div>
+              <div className="mt-5">
+                <div className="text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">Стъпка {index + 1}</div>
+                <p className="mt-3 text-lg font-semibold text-slate-900">{step.title}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{step.description}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -230,6 +280,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </AppShell>
   );
 }

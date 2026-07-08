@@ -1,15 +1,91 @@
-import { DashboardShell, Panel } from "@/app/components/ui";
+import { DashboardShell } from "@/app/components/ui";
+import { OnboardingHero } from "@/app/components/ui/OnboardingHero";
+import { ProfileCompletionCard } from "@/app/components/ui/ProfileCompletionCard";
+import { PremiumCard } from "@/app/components/ui/PremiumCard";
+import { GoldVerificationCard } from "@/app/components/ui/GoldVerificationCard";
+import { FeaturedCompanyCard } from "@/app/components/ui/FeaturedCompanyCard";
+import { StatisticCard } from "@/app/components/ui/StatisticCard";
+import { QuickActionButton } from "@/app/components/ui/QuickActionButton";
 
 export default function CompanyOverviewPage() {
   return (
     <DashboardShell
       role="company"
       title="Overview"
-      subtitle="Преглед на профила и готовност за пускане в публичен каталог."
+      subtitle="Управлявайте вашия фирмен профил и растежа на вашия бизнес."
     >
-      <Panel title="Профил" description="Подготвен за бъдеща интеграция с CRM и файлово хранилище.">
-        <p className="text-sm leading-7 text-slate-700">Тук ще се показват ключови метрики, статус и напомняния за попълване.</p>
-      </Panel>
+      <div className="space-y-8">
+        {/* Welcome Hero */}
+        <OnboardingHero companyName="Вашата строителна фирма" />
+
+        {/* Profile Completion + Premium Cards */}
+        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <ProfileCompletionCard completionPercentage={18} />
+          <div className="space-y-6">
+            <PremiumCard />
+          </div>
+        </div>
+
+        {/* Gold Verification + Featured Cards */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <GoldVerificationCard />
+          <FeaturedCompanyCard />
+        </div>
+
+        {/* Statistics Section */}
+        <div>
+          <h2 className="mb-6 text-2xl font-semibold text-slate-900">Статистика</h2>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <StatisticCard label="Посещения" value={0} icon="👁️" />
+            <StatisticCard label="Запитвания" value={0} icon="📬" />
+            <StatisticCard label="Отзиви" value={0} icon="⭐" />
+            <StatisticCard label="Харесвания" value={0} icon="❤️" />
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div>
+          <h2 className="mb-6 text-2xl font-semibold text-slate-900">Бързи действия</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <QuickActionButton
+              href="/company/dashboard/edit-profile"
+              icon="✏️"
+              label="Редактирай профил"
+              description="Актуализирай информацията за твоята фирма"
+            />
+            <QuickActionButton
+              href="/company/dashboard/gallery"
+              icon="🖼️"
+              label="Галерия"
+              description="Добави снимки на твоите проекти"
+            />
+            <QuickActionButton
+              href="/company/dashboard/projects"
+              icon="🏗️"
+              label="Проекти"
+              description="Управлявай завършени проекти"
+            />
+            <QuickActionButton
+              href="/company/dashboard/services"
+              icon="⚙️"
+              label="Услуги"
+              description="Укажи услугите, които предлагаш"
+            />
+            <QuickActionButton
+              href="/company/dashboard/reviews"
+              icon="💬"
+              label="Отзиви"
+              description="Преглед на отзивите от клиенти"
+            />
+            <QuickActionButton
+              href="/company/dashboard/messages"
+              icon="💌"
+              label="Съобщения"
+              description="Общувай с потенциални клиенти"
+            />
+          </div>
+        </div>
+      </div>
     </DashboardShell>
   );
 }

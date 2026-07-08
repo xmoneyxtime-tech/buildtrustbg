@@ -30,15 +30,13 @@ export function DashboardShell({ role, title, subtitle, children }: DashboardShe
         ]
       : [
           { href: "/admin/dashboard", label: "Dashboard" },
-          { href: "/admin/dashboard/pending-companies", label: "Pending Companies" },
-          { href: "/admin/dashboard/approved-companies", label: "Approved Companies" },
-          { href: "/admin/dashboard/rejected-companies", label: "Rejected Companies" },
-          { href: "/admin/dashboard/users", label: "Users" },
-          { href: "/admin/dashboard/reviews", label: "Reviews" },
-          { href: "/admin/dashboard/categories", label: "Categories" },
-          { href: "/admin/dashboard/cities", label: "Cities" },
-          { href: "/admin/dashboard/homepage", label: "Homepage" },
-          { href: "/admin/dashboard/settings", label: "Settings" },
+          { href: "/admin/companies", label: "Все фирми" },
+          { href: "/admin/dashboard/pending-companies", label: "Очаква се одобрение" },
+          { href: "/admin/gold-verification", label: "Gold Верификация" },
+          { href: "/admin/premium", label: "Premium фирми" },
+          { href: "/admin/dashboard/categories", label: "Категории" },
+          { href: "/admin/dashboard/cities", label: "Градове" },
+          { href: "/admin/dashboard/settings", label: "Настройки" },
         ];
 
   return (

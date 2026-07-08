@@ -1,15 +1,42 @@
-import { DashboardShell, Panel, StatusBadge } from "@/app/components/ui";
+"use client";
+
+import { DashboardShell } from "@/app/components/ui";
+import { AdminTable } from "@/app/components/ui/AdminTable";
+import { mockCompanies } from "@/app/lib/mock-admin-data";
 
 export default function PendingCompaniesPage() {
+  const pendingCompanies = mockCompanies.filter((c) => c.status === "pending");
+
   return (
     <DashboardShell
       role="admin"
-      title="Pending Companies"
-      subtitle="Преглеждайте профили, които чакат одобрение." 
+      title="Очаква се одобрение"
+      subtitle="Преглеждайте профили, които чакат администраторско одобрение"
     >
-      <Panel title="Чакащи регистрации" description="Профили, които ще бъдат одобрени или отхвърлени след преглед.">
-        <StatusBadge variant="warning">Няма чакащи компании в момента.</StatusBadge>
-      </Panel>
+      <div className="space-y-6">
+        {pendingCompanies.length > 0 ? (
+          <AdminTable
+            columns={[
+              { key: "name", label: "Фирма" },
+              { key: "email", label: "Email" },
+              { key: "phone", label: "Телефон" },
+              { key: "city", label: "Град" },
+              { key: "service", label: "Услуга" },
+              { key: "submittedAt", label: "Подадена" },
+            ]}
+            data={pendingCompanies}
+            actions={[
+              { label: "Преглед", onClick: () => {}, variant: "secondary" },
+              { label: "Одобри", onClick: () => {}, variant: "primary" },
+              { label: "Отхвърли", onClick: () => {}, variant: "danger" },
+            ]}
+          />
+        ) : (
+          <div className="rounded-[20px] border border-slate-200/80 bg-white p-8 text-center shadow-[0_12px_32px_-16px_rgba(15,76,129,0.12)]">
+            <p className="text-slate-600">Няма чакащи одобрение компании.</p>
+          </div>
+        )}
+      </div>
     </DashboardShell>
   );
 }
