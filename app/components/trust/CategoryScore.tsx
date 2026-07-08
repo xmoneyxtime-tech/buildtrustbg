@@ -14,6 +14,17 @@ interface CategoryScoreProps {
 }
 
 /**
+ * Display labels for each category (English key -> Bulgarian label)
+ */
+const categoryLabels: Record<keyof CategoryScore, string> = {
+  Profile: 'Профил',
+  Reviews: 'Отзиви',
+  Verification: 'Верификация',
+  Engagement: 'Активност',
+  Reputation: 'Репутация',
+};
+
+/**
  * Color mapping for each category
  */
 const categoryColors: Record<keyof CategoryScore, 'orange' | 'blue' | 'green' | 'purple' | 'gray'> = {
@@ -37,7 +48,7 @@ export function CategoryScore({ scores }: CategoryScoreProps) {
       {categories.map((category) => (
         <ScoreProgress
           key={category}
-          label={category}
+          label={categoryLabels[category]}
           value={scores[category]}
           color={categoryColors[category]}
         />

@@ -14,6 +14,17 @@ interface ConfidenceBadgeProps {
 }
 
 /**
+ * Display labels for confidence levels (English -> Bulgarian)
+ */
+const confidenceLevelLabels: Record<ConfidenceLevel, string> = {
+  'Very High': 'Много висока',
+  'High': 'Висока',
+  'Medium': 'Средна',
+  'Low': 'Ниска',
+  'Very Low': 'Много ниска',
+};
+
+/**
  * Get badge appearance based on confidence level
  */
 function getConfidenceColor(level: ConfidenceLevel): { bg: string; text: string } {
@@ -42,7 +53,7 @@ export function ConfidenceBadge({ level, size = 'md' }: ConfidenceBadgeProps) {
 
   return (
     <span className={`inline-block rounded-full font-medium border border-current border-opacity-20 ${bg} ${text} ${sizeClasses}`}>
-      {level}
+      {confidenceLevelLabels[level]}
     </span>
   );
 }

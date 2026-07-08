@@ -1,0 +1,58 @@
+
+> buildtrustbg@0.1.0 build
+> next build
+
+▲ Next.js 16.2.10 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 5.8s
+  Running TypeScript ...
+  Finished TypeScript in 3.4s ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/35) ...
+  Generating static pages using 5 workers (8/35) 
+  Generating static pages using 5 workers (17/35) 
+  Generating static pages using 5 workers (26/35) 
+✓ Generating static pages using 5 workers (35/35) in 466ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /admin/companies
+├ ○ /admin/dashboard
+├ ○ /admin/dashboard/approved-companies
+├ ○ /admin/dashboard/categories
+├ ○ /admin/dashboard/cities
+├ ○ /admin/dashboard/homepage
+├ ○ /admin/dashboard/pending-companies
+├ ○ /admin/dashboard/rejected-companies
+├ ○ /admin/dashboard/reviews
+├ ○ /admin/dashboard/settings
+├ ○ /admin/dashboard/users
+├ ○ /admin/gold-verification
+├ ○ /admin/premium
+├ ƒ /api/ai
+├ ○ /companies
+├ ƒ /companies/[slug]
+├ ○ /company/dashboard
+├ ○ /company/dashboard/edit-profile
+├ ○ /company/dashboard/gallery
+├ ○ /company/dashboard/messages
+├ ○ /company/dashboard/overview
+├ ○ /company/dashboard/projects
+├ ○ /company/dashboard/reviews
+├ ○ /company/dashboard/services
+├ ○ /company/dashboard/subscription
+├ ○ /company/dashboard/verification-status
+├ ○ /contact
+├ ○ /cookies
+├ ○ /login
+├ ○ /privacy
+├ ○ /register
+└ ○ /terms
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

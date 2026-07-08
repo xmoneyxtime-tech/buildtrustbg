@@ -14,6 +14,19 @@ interface TrustBadgeProps {
 }
 
 /**
+ * Display labels for trust levels (English -> Bulgarian)
+ */
+const trustLevelLabels: Record<TrustLevel, string> = {
+  'Legendary': 'Легендарен',
+  'Excellent': 'Отличен',
+  'Very Good': 'Много добър',
+  'Good': 'Добър',
+  'Fair': 'Надежден',
+  'Weak': 'Слаб',
+  'Poor': 'Лош',
+};
+
+/**
  * Get badge color based on trust level
  */
 function getBadgeColor(level: TrustLevel): { bg: string; text: string } {
@@ -46,7 +59,7 @@ export function TrustBadge({ level, size = 'md' }: TrustBadgeProps) {
 
   return (
     <span className={`inline-block rounded-full font-semibold ${bg} ${text} ${sizeClasses}`}>
-      {level}
+      {trustLevelLabels[level]}
     </span>
   );
 }

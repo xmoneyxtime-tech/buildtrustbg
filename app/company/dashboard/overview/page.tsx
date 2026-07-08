@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardShell } from "@/app/components/ui";
 import { OnboardingHero } from "@/app/components/ui/OnboardingHero";
 import { ProfileCompletionCard } from "@/app/components/ui/ProfileCompletionCard";
@@ -6,13 +8,16 @@ import { GoldVerificationCard } from "@/app/components/ui/GoldVerificationCard";
 import { FeaturedCompanyCard } from "@/app/components/ui/FeaturedCompanyCard";
 import { StatisticCard } from "@/app/components/ui/StatisticCard";
 import { QuickActionButton } from "@/app/components/ui/QuickActionButton";
+import { useTranslation } from "@/app/lib/i18n";
 
 export default function CompanyOverviewPage() {
+  const { t } = useTranslation();
+
   return (
     <DashboardShell
       role="company"
-      title="Overview"
-      subtitle="Управлявайте вашия фирмен профил и растежа на вашия бизнес."
+      title={t("dashboardCompany.overviewTitle")}
+      subtitle={t("dashboardCompany.overviewDescription")}
     >
       <div className="space-y-8">
         {/* Welcome Hero */}
@@ -34,54 +39,54 @@ export default function CompanyOverviewPage() {
 
         {/* Statistics Section */}
         <div>
-          <h2 className="mb-6 text-2xl font-semibold text-slate-900">Статистика</h2>
+          <h2 className="mb-6 text-2xl font-semibold text-slate-900">{t("stats.visits")}</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <StatisticCard label="Посещения" value={0} icon="👁️" />
-            <StatisticCard label="Запитвания" value={0} icon="📬" />
-            <StatisticCard label="Отзиви" value={0} icon="⭐" />
-            <StatisticCard label="Харесвания" value={0} icon="❤️" />
+            <StatisticCard label={t("stats.visits")} value={0} icon="👁️" />
+            <StatisticCard label={t("stats.inquiries")} value={0} icon="📬" />
+            <StatisticCard label={t("stats.reviews")} value={0} icon="⭐" />
+            <StatisticCard label={t("stats.likes")} value={0} icon="❤️" />
           </div>
         </div>
 
         {/* Quick Actions */}
         <div>
-          <h2 className="mb-6 text-2xl font-semibold text-slate-900">Бързи действия</h2>
+          <h2 className="mb-6 text-2xl font-semibold text-slate-900">Quick Actions</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <QuickActionButton
               href="/company/dashboard/edit-profile"
               icon="✏️"
-              label="Редактирай профил"
-              description="Актуализирай информацията за твоята фирма"
+              label={t("dashboardCompany.editProfile")}
+              description="Update your company information"
             />
             <QuickActionButton
               href="/company/dashboard/gallery"
               icon="🖼️"
-              label="Галерия"
-              description="Добави снимки на твоите проекти"
+              label={t("dashboard.gallery")}
+              description="Add photos of your projects"
             />
             <QuickActionButton
               href="/company/dashboard/projects"
               icon="🏗️"
-              label="Проекти"
-              description="Управлявай завършени проекти"
+              label={t("dashboard.projects")}
+              description="Manage completed projects"
             />
             <QuickActionButton
               href="/company/dashboard/services"
               icon="⚙️"
-              label="Услуги"
-              description="Укажи услугите, които предлагаш"
+              label={t("dashboard.services")}
+              description="Specify services you offer"
             />
             <QuickActionButton
               href="/company/dashboard/reviews"
               icon="💬"
-              label="Отзиви"
-              description="Преглед на отзивите от клиенти"
+              label={t("dashboard.reviews")}
+              description="View client reviews"
             />
             <QuickActionButton
               href="/company/dashboard/messages"
               icon="💌"
-              label="Съобщения"
-              description="Общувай с потенциални клиенти"
+              label={t("dashboard.messages")}
+              description="Communicate with potential clients"
             />
           </div>
         </div>
