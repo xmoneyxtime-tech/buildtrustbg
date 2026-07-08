@@ -2,6 +2,7 @@
 
 import { DashboardShell } from "@/app/components/ui";
 import { ApplicationCard } from "@/app/components/ui/ApplicationCard";
+import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockGoldApplications } from "@/app/lib/mock-admin-data";
 
 export default function GoldVerificationPage() {
@@ -12,6 +13,7 @@ export default function GoldVerificationPage() {
       subtitle="Управляйте заявки за Gold верификация"
     >
       <div className="space-y-6">
+        <AdminNotice />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {mockGoldApplications.map((app) => (
             <ApplicationCard

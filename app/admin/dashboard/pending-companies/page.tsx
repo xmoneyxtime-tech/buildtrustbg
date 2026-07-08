@@ -2,6 +2,7 @@
 
 import { DashboardShell } from "@/app/components/ui";
 import { AdminTable } from "@/app/components/ui/AdminTable";
+import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockCompanies } from "@/app/lib/mock-admin-data";
 
 export default function PendingCompaniesPage() {
@@ -14,6 +15,7 @@ export default function PendingCompaniesPage() {
       subtitle="Преглеждайте профили, които чакат администраторско одобрение"
     >
       <div className="space-y-6">
+        <AdminNotice />
         {pendingCompanies.length > 0 ? (
           <AdminTable
             columns={[

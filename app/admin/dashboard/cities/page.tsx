@@ -1,62 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import Link from "next/link";
 import { DashboardShell } from "@/app/components/ui";
-import { AdminTable } from "@/app/components/ui/AdminTable";
-import { AdminForm } from "@/app/components/ui/AdminForm";
-import { mockCities } from "@/app/lib/mock-admin-data";
+import { mockCities, mockCompanies } from "@/app/lib/mock-admin-data";
 
 export default function CitiesPage() {
-  const [cities, setCities] = useState(mockCities);
-  const [showForm, setShowForm] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleAddCity = (data: Record<string, string>) => {
-    const newCity = {
-      id: String(Math.max(...cities.map((c) => parseInt(c.id)), 0) + 1),
-      name: data.name,
-      region: data.region,
-    };
-    setCities([...cities, newCity]);
-    setShowForm(false);
-  };
+  // Calculate company count per city
+  const cityCompanyCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    mockCities.forEach((city) => {
+      counts[city.name] = mockCompanies.filter((c) => c.city === city.name).length;
+    });
+    return counts;
+  }, []);
 
-  const handleDeleteCity = (id: string) => {
-    setCities(cities.filter((c) => c.id !== id));
-  };
+  const filteredCities = useMemo(() => {
+    if (!searchQuery.trim()) return mockCities;
+
+    const query = searchQuery.toLowerCase();
+    return mockCities.filter(
+      (city) =>
+        city.name.toLowerCase().includes(query) ||
+        city.region.toLowerCase().includes(query)
+    );
+  }, [searchQuery]);
 
   return (
     <DashboardShell role="admin" title="Градове" subtitle="Управляйте градове и региони">
       <div className="space-y-6">
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-[12px] bg-[#0F4C81] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0B3D67]"
-        >
-          {showForm ? "Отмени" : "Добави град"}
-        </button>
-
-        {showForm && (
-          <AdminForm
-            fields={[
-              { name: "name", label: "Град", type: "text", required: true, placeholder: "София" },
-              { name: "region", label: "Регион", type: "text", required: true, placeholder: "Столична" },
-            ]}
-            onSubmit={handleAddCity}
-            submitLabel="Добави"
-            onCancel={() => setShowForm(false)}
-          />
-        )}
-
-        <AdminTable
-          columns={[
-            { key: "name", label: "Град" },
-            { key: "region", label: "Регион" },
-          ]}
-          data={cities}
-          actions={[
-            { label: "Редактирай", onClick: () => {}, variant: "secondary" },
-            { label: "Изтрий", onClick: (row) => handleDeleteCity(row.id), variant: "danger" },
-          ]}
+        <input
+          type="text"
+          placeholder="Търсете град или регион..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full rounded-[12px] border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 placeholder-gray-500 transition hover:border-gray-300 focus:border-[#F58220] focus:outline-none"
         />
+
+        <div className="space-y-3">
+          {filteredCities.length > 0 ? (
+            filteredCities.map((city) => (
+              <Link
+                key={city.id}
+                href={`/companies?city=${encodeURIComponent(city.name)}`}
+              >
+                <div className="flex items-center justify-between rounded-[12px] border border-gray-200 bg-white px-6 py-4 transition hover:border-[#F58220] hover:bg-[#FFF7EE]">
+                  <div className="flex items-center gap-4">
+                    <span className="text-2xl">📍</span>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{city.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        {cityCompanyCounts[city.name] || 0} компани{
+                          (cityCompanyCounts[city.name] || 0) === 1 ? "я" : "и"
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-xl text-gray-400">&gt;</span>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <div className="rounded-[12px] border border-gray-200 bg-white px-6 py-12 text-center">
+              <p className="text-gray-500">Няма намерени градове</p>
+            </div>
+          )}
+        </div>
       </div>
     </DashboardShell>
   );

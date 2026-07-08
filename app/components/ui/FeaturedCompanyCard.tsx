@@ -7,7 +7,10 @@ export function FeaturedCompanyCard() {
             Featured
           </span>
           <h3 className="mt-4 text-2xl font-semibold text-slate-900">Избрана фирма</h3>
-          <p className="mt-3 text-slate-700">Бъдете сред първите резултати при търсене и достигнете до повече клиенти.</p>
+          <p className="mt-3 text-slate-700">
+            <span className="text-3xl font-bold text-slate-900">49 €</span>
+            <span className="text-slate-600"> / месец</span>
+          </p>
         </div>
         <div className="text-4xl">⭐</div>
       </div>

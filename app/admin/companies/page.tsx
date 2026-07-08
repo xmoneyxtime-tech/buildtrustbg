@@ -3,6 +3,7 @@
 import { DashboardShell } from "@/app/components/ui";
 import { AdminTable } from "@/app/components/ui/AdminTable";
 import { AdminBadge } from "@/app/components/ui/AdminBadge";
+import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockCompanies } from "@/app/lib/mock-admin-data";
 
 export default function AdminCompaniesPage() {
@@ -13,6 +14,7 @@ export default function AdminCompaniesPage() {
       subtitle="Управляйте всички регистрирани фирми на платформата"
     >
       <div className="space-y-6">
+        <AdminNotice />
         <AdminTable
           columns={[
             { key: "name", label: "Фирма" },

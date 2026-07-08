@@ -3,6 +3,7 @@
 import { DashboardShell } from "@/app/components/ui";
 import { AdminTable } from "@/app/components/ui/AdminTable";
 import { AdminBadge } from "@/app/components/ui/AdminBadge";
+import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockCompanies } from "@/app/lib/mock-admin-data";
 
 export default function PremiumCompaniesPage() {
@@ -15,6 +16,7 @@ export default function PremiumCompaniesPage() {
       subtitle="Управляйте Premium абонаменти"
     >
       <div className="space-y-6">
+        <AdminNotice />
         {premiumCompanies.length > 0 ? (
           <AdminTable
             columns={[

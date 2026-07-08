@@ -3,8 +3,8 @@ export function PremiumCard() {
     "Приоритетно класиране",
     "Неограничена галерия",
     "Избран профил",
-    "Статистика",
-    "Бъдещи запитвания",
+    "Статистика и аналитика",
+    "Подкрепа на разширяване",
   ];
 
   return (
@@ -15,7 +15,10 @@ export function PremiumCard() {
             Premium
           </span>
           <h3 className="mt-4 text-2xl font-semibold text-slate-900">BuildTrustBG Premium</h3>
-          <p className="mt-3 text-slate-700">Получавайте повече клиенти чрез Premium профил.</p>
+          <p className="mt-3 text-slate-700">
+            <span className="text-3xl font-bold text-slate-900">29 €</span>
+            <span className="text-slate-600"> / месец</span>
+          </p>
         </div>
         <div className="text-4xl">💎</div>
       </div>
@@ -30,7 +33,7 @@ export function PremiumCard() {
       </div>
 
       <button className="mt-6 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#F58220] px-6 text-sm font-semibold text-white transition hover:bg-[#E36F00]">
-        Стани Premium
+        Станете Premium абонат
       </button>
     </div>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardShell } from "@/app/components/ui";
 import { OnboardingHero } from "@/app/components/ui/OnboardingHero";
 import { ProfileCompletionCard } from "@/app/components/ui/ProfileCompletionCard";
@@ -6,8 +8,13 @@ import { GoldVerificationCard } from "@/app/components/ui/GoldVerificationCard";
 import { FeaturedCompanyCard } from "@/app/components/ui/FeaturedCompanyCard";
 import { StatisticCard } from "@/app/components/ui/StatisticCard";
 import { QuickActionButton } from "@/app/components/ui/QuickActionButton";
+import { TrustScoreCard } from "@/app/components/trust";
+import { generateMockTrustScore } from "@/app/lib/mock-trust-scores";
 
 export default function CompanyDashboardPage() {
+  // Generate sample trust score for demo (company ID "1" = consistent results)
+  const trustScore = generateMockTrustScore("1");
+
   return (
     <DashboardShell
       role="company"
@@ -25,6 +32,9 @@ export default function CompanyDashboardPage() {
             <PremiumCard />
           </div>
         </div>
+
+        {/* Trust Score Card */}
+        <TrustScoreCard result={trustScore} title="Коефициент на доверие" />
 
         {/* Gold Verification + Featured Cards */}
         <div className="grid gap-6 lg:grid-cols-2">

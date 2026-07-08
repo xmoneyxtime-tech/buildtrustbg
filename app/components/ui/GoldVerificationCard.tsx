@@ -1,9 +1,9 @@
 export function GoldVerificationCard() {
   const benefits = [
     "Значка за проверена фирма",
-    "Повишена надеждност",
+    "Повишена надеждност и доверие",
     "Приоритет в резултатите",
-    "Видимост за клиенти",
+    "Видимост за потенциални клиенти",
   ];
 
   return (
@@ -11,10 +11,13 @@ export function GoldVerificationCard() {
       <div className="flex items-start justify-between">
         <div>
           <span className="inline-flex rounded-full border border-[#0F4C81]/25 bg-[#F0F4F9] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#0F4C81]">
-            Gold Verification
+            Верификация
           </span>
-          <h3 className="mt-4 text-2xl font-semibold text-slate-900">Проверена фирма</h3>
-          <p className="mt-3 text-slate-700">Покажи на клиентите, че си доверена и проверена фирма.</p>
+          <h3 className="mt-4 text-2xl font-semibold text-slate-900">Gold верификация</h3>
+          <p className="mt-3 text-slate-700">
+            <span className="text-3xl font-bold text-slate-900">99 €</span>
+            <span className="text-slate-600"> / еднократна</span>
+          </p>
         </div>
         <div className="text-4xl">🛡️</div>
       </div>
@@ -29,7 +32,7 @@ export function GoldVerificationCard() {
       </div>
 
       <button className="mt-6 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#0F4C81] px-6 text-sm font-semibold text-white transition hover:bg-[#0B3D67]">
-        Кандидатствай
+        Кандидатствайте сега
       </button>
     </div>
   );

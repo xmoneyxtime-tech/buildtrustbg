@@ -12,6 +12,12 @@ const companyLinks = [
   { href: "/login", label: "Вход за фирми" },
 ];
 
+const legalLinks = [
+  { href: "/terms", label: "Общи условия" },
+  { href: "/privacy", label: "Политика за поверителност" },
+  { href: "/cookies", label: "Политика за бисквитки" },
+];
+
 const categories = [
   "Строителство на къщи",
   "Основни ремонти",
@@ -23,7 +29,7 @@ export function Footer() {
   return (
     <footer className="border-t border-slate-200/80 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-10 sm:px-8 lg:px-10 lg:py-12">
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr_0.8fr]">
           <div>
             <Link href="/" className="flex items-center gap-3">
               <Image
@@ -41,7 +47,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="mt-5 max-w-md text-sm leading-7 text-slate-600">
-              BuildTrustBG помага на клиенти да откриват, сравняват и свързват с проверени строителни фирми в България.
+              BuildTrustBG помага на клиенти да открият, сравняват и свързват с проверени строителни фирми в България.
             </p>
             <div className="mt-5 space-y-2 text-sm text-slate-600">
               <a href="mailto:buildtrustbg@abv.bg" className="block transition hover:text-[#0F4C81]">
@@ -84,6 +90,19 @@ export function Footer() {
             <ul className="mt-4 space-y-2 text-sm text-slate-600">
               {categories.map((category) => (
                 <li key={category}>{category}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">Правна информация</p>
+            <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              {legalLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="transition hover:text-[#0F4C81]">
+                    {link.label}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>

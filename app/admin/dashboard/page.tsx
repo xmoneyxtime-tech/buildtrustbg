@@ -4,6 +4,7 @@ import { DashboardShell } from "@/app/components/ui";
 import { AdminCard } from "@/app/components/ui/AdminCard";
 import { AdminTable } from "@/app/components/ui/AdminTable";
 import { AdminBadge } from "@/app/components/ui/AdminBadge";
+import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockCompanies } from "@/app/lib/mock-admin-data";
 
 export default function AdminDashboardPage() {
@@ -23,6 +24,9 @@ export default function AdminDashboardPage() {
       subtitle="Преглед на платформата BuildTrustBG"
     >
       <div className="space-y-8">
+        {/* Admin Notice */}
+        <AdminNotice />
+
         {/* Statistics */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           <AdminCard title="Всички фирми" value={totalCompanies} icon="🏢" color="blue" />
@@ -144,6 +148,38 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
                 ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Business Readiness */}
+        <div>
+          <h2 className="mb-6 text-2xl font-semibold text-slate-900">Следващи бизнес стъпки</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-sm">
+              <div className="text-2xl">🗄️</div>
+              <p className="mt-2 font-semibold text-slate-900">Активиране на база данни</p>
+              <p className="mt-1 text-xs text-slate-600">Интеграция с Supabase</p>
+            </div>
+            <div className="rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-sm">
+              <div className="text-2xl">🔐</div>
+              <p className="mt-2 font-semibold text-slate-900">Реална регистрация</p>
+              <p className="mt-1 text-xs text-slate-600">Система за вход</p>
+            </div>
+            <div className="rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-sm">
+              <div className="text-2xl">✅</div>
+              <p className="mt-2 font-semibold text-slate-900">Одобряване на фирми</p>
+              <p className="mt-1 text-xs text-slate-600">Workflow система</p>
+            </div>
+            <div className="rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-sm">
+              <div className="text-2xl">💳</div>
+              <p className="mt-2 font-semibold text-slate-900">Плащания в евро</p>
+              <p className="mt-1 text-xs text-slate-600">Stripe интеграция</p>
+            </div>
+            <div className="rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-sm">
+              <div className="text-2xl">💎</div>
+              <p className="mt-2 font-semibold text-slate-900">Premium планове</p>
+              <p className="mt-1 text-xs text-slate-600">Абонаментна система</p>
             </div>
           </div>
         </div>

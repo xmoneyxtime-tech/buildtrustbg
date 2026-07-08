@@ -22,3 +22,4 @@ export { AdminTable } from "./AdminTable";
 export { AdminBadge } from "./AdminBadge";
 export { AdminForm } from "./AdminForm";
 export { ApplicationCard } from "./ApplicationCard";
+export { AdminNotice } from "./AdminNotice";
