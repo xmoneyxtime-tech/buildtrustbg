@@ -2,11 +2,7 @@
 
 import { useTranslation } from "@/app/lib/i18n";
 
-type OnboardingHeroProps = {
-  companyName?: string;
-};
-
-export function OnboardingHero({ companyName }: OnboardingHeroProps) {
+export function OnboardingHero() {
   const { t } = useTranslation();
 
   return (
@@ -20,16 +16,10 @@ export function OnboardingHero({ companyName }: OnboardingHeroProps) {
             {t("onboarding.welcomeTitle")}
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-8 text-slate-700 sm:text-lg">
-            {companyName ? (
-              <>
-                {t("onboarding.welcomeDescription").replace("{company}", "")} <span className="font-semibold">{companyName}</span>
-              </>
-            ) : (
-              t("onboarding.welcomeDescription")
-            )}
+            {t("onboarding.welcomeDescription")}
           </p>
         </div>
-        <div className="flex h-32 w-32 items-center justify-center rounded-2xl bg-[#FFF7EE] text-5xl shadow-sm">
+        <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-2xl bg-[#FFF7EE] text-5xl shadow-sm">
           🏢
         </div>
       </div>

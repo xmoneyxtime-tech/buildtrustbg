@@ -1,11 +1,23 @@
-import { DashboardShell, Panel } from "@/app/components/ui";
+"use client";
+
+import { DashboardShell } from "@/app/components/ui";
+import { EmptyState } from "@/app/components/ui/EmptyState";
+import { useTranslation } from "@/app/lib/i18n";
 
 export default function MessagesPage() {
+  const { t } = useTranslation();
+
   return (
-    <DashboardShell role="company" title="Messages" subtitle="Получавайте и управлявайте заявки от посетители.">
-      <Panel title="Съобщения" description="Тук ще се показват входящи запитвания и контакти.">
-        <p className="text-sm leading-7 text-slate-700">Ще бъде добавено в следващ етап.</p>
-      </Panel>
+    <DashboardShell
+      role="company"
+      title={t("dashboardCompany.messagesTitle")}
+      subtitle={t("dashboardCompany.messagesDescription")}
+    >
+      <EmptyState
+        icon="💌"
+        title={t("emptyStates.noMessages")}
+        description={t("emptyStates.noMessagesAction")}
+      />
     </DashboardShell>
   );
 }

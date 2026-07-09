@@ -27,7 +27,7 @@ export function NextStepsCard({ steps }: NextStepsCardProps) {
 
       {highPriority.length > 0 && (
         <div className="mt-6">
-          <p className="text-sm font-semibold text-slate-700 mb-4">Priority Actions</p>
+          <p className="mb-4 text-sm font-semibold text-slate-700">{t("nextSteps.priorityActions")}</p>
           <div className="space-y-3">
             {highPriority.map((step, idx) => (
               <Link
@@ -49,7 +49,7 @@ export function NextStepsCard({ steps }: NextStepsCardProps) {
 
       {mediumPriority.length > 0 && (
         <div className="mt-8">
-          <p className="text-sm font-semibold text-slate-700 mb-4">Other Actions</p>
+          <p className="mb-4 text-sm font-semibold text-slate-700">{t("nextSteps.otherActions")}</p>
           <div className="grid gap-3 sm:grid-cols-2">
             {mediumPriority.map((step, idx) => (
               <Link

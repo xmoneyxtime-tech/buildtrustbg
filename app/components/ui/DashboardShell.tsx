@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { useTranslation } from "@/app/lib/i18n";
 import { Panel } from "./Panel";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type DashboardShellProps = {
   role: "company" | "admin";
@@ -42,46 +44,73 @@ export function DashboardShell({ role, title, subtitle, children }: DashboardShe
         ];
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-7xl flex-col gap-6 px-6 py-6 sm:px-8 lg:flex-row lg:px-10">
-      <aside className="w-full shrink-0 rounded-[28px] border border-slate-200/80 bg-white/90 p-5 shadow-[0_18px_50px_-24px_rgba(15,76,129,0.2)] lg:w-72">
-        <div className="mb-6">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">
-            {role === "company" ? t("auth.companyDashboard") : t("auth.adminDashboard")}
-          </p>
-          <h2 className="mt-3 text-xl font-semibold text-slate-900">BuildTrustBG</h2>
-        </div>
-        <nav className="space-y-2">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-[#0F4C81] text-white shadow-sm"
-                    : "text-slate-700 hover:bg-[#F8FAFC] hover:text-[#0F4C81]"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
-
-      <section className="flex-1">
-        <Panel className="border-none bg-transparent p-0 shadow-none">
-          <div className="mb-6 flex flex-col gap-3 rounded-[24px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_50px_-24px_rgba(15,76,129,0.2)]">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">
-              {role === "company" ? t("dashboardCompany.companyDashboard") : t("adminPages.adminDashboard")}
+    <div className="min-h-screen bg-[linear-gradient(180deg,_#ffffff_0%,_#f8fafc_100%)]">
+      {/* Dashboard Header */}
+      <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 sm:px-8 lg:px-10">
+        <Link href="/" className="flex min-w-0 items-center gap-3">
+          <Image
+            src="/logo-main.png"
+            alt={t("header.title")}
+            width={56}
+            height={56}
+            priority
+            className="h-auto w-[44px] shrink-0 sm:w-[56px]"
+            style={{ objectFit: "contain" }}
+          />
+          <div className="min-w-0">
+            <p className="truncate text-base font-semibold text-[#0F4C81]">{t("header.title")}</p>
+            <p className="truncate text-xs font-medium text-slate-500">
+              {role === "company" ? t("auth.companyDashboard") : t("auth.adminDashboard")}
             </p>
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{title}</h1>
-            <p className="max-w-2xl text-base leading-8 text-slate-700">{subtitle}</p>
           </div>
-          <div className="space-y-6">{children}</div>
-        </Panel>
-      </section>
+        </Link>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <Link
+            href="/"
+            className="hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-[#0F4C81]/20 hover:text-[#0F4C81] sm:inline-flex"
+          >
+            {t("navigation.home")}
+          </Link>
+        </div>
+      </header>
+
+      {/* Dashboard Body */}
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 pb-10 sm:px-8 lg:flex-row lg:px-10">
+        <aside className="w-full shrink-0 rounded-[28px] border border-slate-200/80 bg-white/90 p-5 shadow-[0_18px_50px_-24px_rgba(15,76,129,0.2)] lg:w-72">
+          <nav className="space-y-2">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
+                    isActive
+                      ? "bg-[#0F4C81] text-white shadow-sm"
+                      : "text-slate-700 hover:bg-[#F8FAFC] hover:text-[#0F4C81]"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </aside>
+
+        <section className="flex-1">
+          <Panel className="border-none bg-transparent p-0 shadow-none">
+            <div className="mb-6 flex flex-col gap-3 rounded-[24px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_50px_-24px_rgba(15,76,129,0.2)]">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">
+                {role === "company" ? t("dashboardCompany.companyDashboard") : t("adminPages.adminDashboard")}
+              </p>
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{title}</h1>
+              <p className="max-w-2xl text-base leading-8 text-slate-700">{subtitle}</p>
+            </div>
+            <div className="space-y-6">{children}</div>
+          </Panel>
+        </section>
+      </div>
     </div>
   );
 }

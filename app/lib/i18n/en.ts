@@ -125,6 +125,8 @@ export const enTranslations: Translations = {
     verification: "Verification",
     subscription: "Subscription",
     settings: "Settings",
+    statisticsTitle: "Statistics",
+    quickActionsTitle: "Quick Actions",
   },
 
   // Admin Dashboard
@@ -531,6 +533,7 @@ export const enTranslations: Translations = {
     title: "Profile Completion",
     progress: "Progress",
     missingItems: "Missing Items",
+    completedItems: "Completed",
     logo: "Company Logo",
     description: "Description",
     services: "Services",
@@ -538,6 +541,9 @@ export const enTranslations: Translations = {
     gallery: "Gallery",
     verification: "Verification",
     socialLinks: "Social Links",
+    coverImage: "Cover Image",
+    workingHours: "Working Hours",
+    projects: "Completed Projects",
   },
 
   // Premium Features
@@ -553,11 +559,23 @@ export const enTranslations: Translations = {
     featuredProfile: "Featured Profile",
     statsAnalytics: "Statistics & Analytics",
     expansionSupport: "Expansion Support",
+    currentPlan: "Current Plan",
+    freePlan: "Free Access",
+    freePlanDesc: "Basic profile with core features for registered companies.",
+    upgradeOptions: "Upgrade Options",
   },
 
   // Verification
   verification: {
     goldBadge: "Verification",
+    statusRegistered: "Registered",
+    statusPending: "Pending Approval",
+    statusApproved: "Approved",
+    statusRejected: "Rejected",
+    registeredDescription: "Your company has been successfully registered. The next step is approval by an administrator.",
+    pendingDescription: "Your company profile has been submitted for review by an administrator. This usually takes 1–2 business days.",
+    approvedDescription: "Your company is approved and publicly visible in the catalog.",
+    timelineTitle: "Approval Process",
     goldTitle: "Gold Verification",
     goldPrice: "99",
     goldPriceUnit: "€ / one-time",
@@ -603,10 +621,15 @@ export const enTranslations: Translations = {
   nextSteps: {
     title: "Recommended Next Steps",
     recommendedActions: "Recommended Actions",
+    priorityActions: "Priority Actions",
+    otherActions: "Other Actions",
     completeProfile: "Complete your company profile",
     uploadLogo: "Upload your company logo",
+    addDescription: "Add a company description",
+    addContact: "Add contact information",
     addServices: "Add your services",
     uploadGallery: "Upload photos of your projects",
+    addProjects: "Add completed projects",
     startVerification: "Start your verification process",
     collectReviews: "Collect your first reviews",
     improveTrustScore: "Improve your Trust Score",

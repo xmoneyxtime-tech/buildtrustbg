@@ -1,11 +1,23 @@
-import { DashboardShell, Panel } from "@/app/components/ui";
+"use client";
+
+import { DashboardShell } from "@/app/components/ui";
+import { EmptyState } from "@/app/components/ui/EmptyState";
+import { useTranslation } from "@/app/lib/i18n";
 
 export default function ReviewsPage() {
+  const { t } = useTranslation();
+
   return (
-    <DashboardShell role="company" title="Reviews" subtitle="Проследявайте отзиви и обратна връзка от клиенти.">
-      <Panel title="Отзиви" description="Секция за публични и вътрешни отзиви.">
-        <p className="text-sm leading-7 text-slate-700">Ще бъде добавено в следващ етап.</p>
-      </Panel>
+    <DashboardShell
+      role="company"
+      title={t("dashboardCompany.reviewsTitle")}
+      subtitle={t("dashboardCompany.reviewsDescription")}
+    >
+      <EmptyState
+        icon="⭐"
+        title={t("emptyStates.noReviews")}
+        description={t("emptyStates.noReviewsAction")}
+      />
     </DashboardShell>
   );
 }

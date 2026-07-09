@@ -125,6 +125,8 @@ export const bgTranslations: Translations = {
     verification: "Верификация",
     subscription: "Абонамент",
     settings: "Настройки",
+    statisticsTitle: "Статистика",
+    quickActionsTitle: "Бързи действия",
   },
 
   // Admin Dashboard
@@ -531,6 +533,7 @@ export const bgTranslations: Translations = {
     title: "Завършеност на профила",
     progress: "Прогрес",
     missingItems: "Липсващи елементи",
+    completedItems: "Завършени",
     logo: "Фирмено лого",
     description: "Описание",
     services: "Услуги",
@@ -538,6 +541,9 @@ export const bgTranslations: Translations = {
     gallery: "Галерия",
     verification: "Верификация",
     socialLinks: "Социални връзки",
+    coverImage: "Снимка на корицата",
+    workingHours: "Работно време",
+    projects: "Завършени проекти",
   },
 
   // Premium Features
@@ -553,11 +559,23 @@ export const bgTranslations: Translations = {
     featuredProfile: "Избран профил",
     statsAnalytics: "Статистика и аналитика",
     expansionSupport: "Подкрепа на разширяване",
+    currentPlan: "Текущ план",
+    freePlan: "Безплатен достъп",
+    freePlanDesc: "Базов профил с основни функции за регистрирани фирми.",
+    upgradeOptions: "Планове за надграждане",
   },
 
   // Verification
   verification: {
     goldBadge: "Верификация",
+    statusRegistered: "Регистрирана фирма",
+    statusPending: "Очаква одобрение",
+    statusApproved: "Одобрена",
+    statusRejected: "Отхвърлена",
+    registeredDescription: "Вашата фирма е регистрирана успешно. Следващата стъпка е одобрение от администратор.",
+    pendingDescription: "Профилът на вашата фирма е изпратен за преглед от администратор. Обикновено отнема 1–2 работни дни.",
+    approvedDescription: "Вашата фирма е одобрена и видима в публичния каталог.",
+    timelineTitle: "Процес на одобрение",
     goldTitle: "Gold верификация",
     goldPrice: "99",
     goldPriceUnit: "€ / еднократна",
@@ -603,12 +621,17 @@ export const bgTranslations: Translations = {
   nextSteps: {
     title: "Препоръчани следващи стъпки",
     recommendedActions: "Препоръчани действия",
+    priorityActions: "Приоритетни действия",
+    otherActions: "Допълнителни стъпки",
     completeProfile: "Завършете профила на вашата фирма",
     uploadLogo: "Качете логото на вашата фирма",
+    addDescription: "Добавете описание на вашата фирма",
+    addContact: "Добавете контактна информация",
     addServices: "Добавете вашите услуги",
     uploadGallery: "Качете снимки на вашите проекти",
+    addProjects: "Добавете завършени проекти",
     startVerification: "Стартирайте процес на верификация",
-    collectReviews: "Соберете първи отзиви",
+    collectReviews: "Съберете първи отзиви",
     improveTrustScore: "Подобрете вашия коефициент на доверие",
   },
 

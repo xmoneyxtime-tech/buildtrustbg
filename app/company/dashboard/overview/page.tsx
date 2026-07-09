@@ -5,7 +5,6 @@ import { OnboardingHero } from "@/app/components/ui/OnboardingHero";
 import { ProfileCompletionCard } from "@/app/components/ui/ProfileCompletionCard";
 import { PremiumCard } from "@/app/components/ui/PremiumCard";
 import { GoldVerificationCard } from "@/app/components/ui/GoldVerificationCard";
-import { FeaturedCompanyCard } from "@/app/components/ui/FeaturedCompanyCard";
 import { StatisticCard } from "@/app/components/ui/StatisticCard";
 import { QuickActionButton } from "@/app/components/ui/QuickActionButton";
 import { useTranslation } from "@/app/lib/i18n";
@@ -21,25 +20,22 @@ export default function CompanyOverviewPage() {
     >
       <div className="space-y-8">
         {/* Welcome Hero */}
-        <OnboardingHero companyName="Вашата строителна фирма" />
+        <OnboardingHero />
 
         {/* Profile Completion + Premium Cards */}
         <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <ProfileCompletionCard completionPercentage={18} />
+          <ProfileCompletionCard completionPercentage={0} />
           <div className="space-y-6">
             <PremiumCard />
           </div>
         </div>
 
-        {/* Gold Verification + Featured Cards */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <GoldVerificationCard />
-          <FeaturedCompanyCard />
-        </div>
+        {/* Gold Verification */}
+        <GoldVerificationCard />
 
         {/* Statistics Section */}
         <div>
-          <h2 className="mb-6 text-2xl font-semibold text-slate-900">{t("stats.visits")}</h2>
+          <h2 className="mb-6 text-xl font-semibold text-slate-900">{t("dashboard.statisticsTitle")}</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <StatisticCard label={t("stats.visits")} value={0} icon="👁️" />
             <StatisticCard label={t("stats.inquiries")} value={0} icon="📬" />
@@ -50,43 +46,43 @@ export default function CompanyOverviewPage() {
 
         {/* Quick Actions */}
         <div>
-          <h2 className="mb-6 text-2xl font-semibold text-slate-900">Quick Actions</h2>
+          <h2 className="mb-6 text-xl font-semibold text-slate-900">{t("dashboard.quickActionsTitle")}</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <QuickActionButton
               href="/company/dashboard/edit-profile"
               icon="✏️"
-              label={t("dashboardCompany.editProfile")}
-              description="Update your company information"
+              label={t("quickActions.editProfile")}
+              description={t("quickActions.editProfileDesc")}
             />
             <QuickActionButton
               href="/company/dashboard/gallery"
               icon="🖼️"
-              label={t("dashboard.gallery")}
-              description="Add photos of your projects"
+              label={t("quickActions.gallery")}
+              description={t("quickActions.galleryDesc")}
             />
             <QuickActionButton
               href="/company/dashboard/projects"
               icon="🏗️"
-              label={t("dashboard.projects")}
-              description="Manage completed projects"
+              label={t("quickActions.projects")}
+              description={t("quickActions.projectsDesc")}
             />
             <QuickActionButton
               href="/company/dashboard/services"
               icon="⚙️"
-              label={t("dashboard.services")}
-              description="Specify services you offer"
+              label={t("quickActions.services")}
+              description={t("quickActions.servicesDesc")}
             />
             <QuickActionButton
               href="/company/dashboard/reviews"
               icon="💬"
-              label={t("dashboard.reviews")}
-              description="View client reviews"
+              label={t("quickActions.reviews")}
+              description={t("quickActions.reviewsDesc")}
             />
             <QuickActionButton
               href="/company/dashboard/messages"
               icon="💌"
-              label={t("dashboard.messages")}
-              description="Communicate with potential clients"
+              label={t("quickActions.messages")}
+              description={t("quickActions.messagesDesc")}
             />
           </div>
         </div>

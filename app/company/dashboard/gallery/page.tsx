@@ -1,11 +1,24 @@
-import { DashboardShell, Panel } from "@/app/components/ui";
+"use client";
+
+import { DashboardShell } from "@/app/components/ui";
+import { EmptyState } from "@/app/components/ui/EmptyState";
+import { useTranslation } from "@/app/lib/i18n";
 
 export default function GalleryPage() {
+  const { t } = useTranslation();
+
   return (
-    <DashboardShell role="company" title="Gallery" subtitle="Качете снимки и визуално представяне на компанията си.">
-      <Panel title="Галерия" description="Планирано място за снимки от обекти, екип и процеси.">
-        <p className="text-sm leading-7 text-slate-700">Ще бъде добавено в следващ етап.</p>
-      </Panel>
+    <DashboardShell
+      role="company"
+      title={t("dashboardCompany.galleryTitle")}
+      subtitle={t("dashboardCompany.galleryDescription")}
+    >
+      <EmptyState
+        icon="🖼️"
+        title={t("emptyStates.noGallery")}
+        description={t("emptyStates.noGalleryAction")}
+        action={{ label: t("buttons.add"), href: "#" }}
+      />
     </DashboardShell>
   );
 }

@@ -23,11 +23,15 @@ export function ProfileCompletionCard({ completionPercentage = 0 }: ProfileCompl
 
   const checklistItems = [
     { label: t("profileCompletion.logo"), completed: false },
+    { label: t("profileCompletion.coverImage"), completed: false },
     { label: t("profileCompletion.description"), completed: false },
     { label: t("profileCompletion.services"), completed: false },
     { label: t("profileCompletion.gallery"), completed: false },
+    { label: t("profileCompletion.projects"), completed: false },
     { label: t("profileCompletion.contactInfo"), completed: false },
+    { label: t("profileCompletion.workingHours"), completed: false },
     { label: t("profileCompletion.verification"), completed: false },
+    { label: t("profileCompletion.socialLinks"), completed: false },
   ];
 
   return (

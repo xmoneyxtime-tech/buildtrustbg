@@ -130,6 +130,8 @@ export interface Translations {
     verification: string;
     subscription: string;
     settings: string;
+    statisticsTitle: string;
+    quickActionsTitle: string;
   };
 
   // Admin Dashboard
@@ -536,6 +538,7 @@ export interface Translations {
     title: string;
     progress: string;
     missingItems: string;
+    completedItems: string;
     logo: string;
     description: string;
     services: string;
@@ -543,6 +546,9 @@ export interface Translations {
     gallery: string;
     verification: string;
     socialLinks: string;
+    coverImage: string;
+    workingHours: string;
+    projects: string;
   };
 
   // Premium Features
@@ -558,11 +564,23 @@ export interface Translations {
     featuredProfile: string;
     statsAnalytics: string;
     expansionSupport: string;
+    currentPlan: string;
+    freePlan: string;
+    freePlanDesc: string;
+    upgradeOptions: string;
   };
 
   // Verification
   verification: {
     goldBadge: string;
+    statusRegistered: string;
+    statusPending: string;
+    statusApproved: string;
+    statusRejected: string;
+    registeredDescription: string;
+    pendingDescription: string;
+    approvedDescription: string;
+    timelineTitle: string;
     goldTitle: string;
     goldPrice: string;
     goldPriceUnit: string;
@@ -608,10 +626,15 @@ export interface Translations {
   nextSteps: {
     title: string;
     recommendedActions: string;
+    priorityActions: string;
+    otherActions: string;
     completeProfile: string;
     uploadLogo: string;
+    addDescription: string;
+    addContact: string;
     addServices: string;
     uploadGallery: string;
+    addProjects: string;
     startVerification: string;
     collectReviews: string;
     improveTrustScore: string;
