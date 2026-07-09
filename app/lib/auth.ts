@@ -7,7 +7,20 @@
  * In production, connect this to your actual authentication provider.
  */
 
-export type UserRole = "admin" | "company" | "user" | null;
+import { 
+  UserRole,
+  ROLE_COMPANY,
+  ROLE_ADMIN,
+  ROLE_SUPER_ADMIN,
+} from "@/app/lib/constants/roles";
+
+export type { UserRole } from "@/app/lib/constants/roles";
+export {
+  ROLE_COMPANY,
+  ROLE_ADMIN,
+  ROLE_SUPER_ADMIN,
+  ADMIN_ROLES,
+} from "@/app/lib/constants/roles";
 
 export interface User {
   id: string;
@@ -32,9 +45,9 @@ export function getCurrentUser(): User | null {
   // Mock implementation for testing:
   // Uncomment one of the below to test different roles during development
   
-  // return { id: "admin-1", email: "admin@example.com", role: "admin", name: "Admin User" };
-  // return { id: "company-1", email: "company@example.com", role: "company", name: "Company User" };
-  // return { id: "user-1", email: "user@example.com", role: "user", name: "Regular User" };
+  // return { id: "admin-1", email: "admin@example.com", role: ROLE_ADMIN, name: "Admin User" };
+  // return { id: "super-admin-1", email: "super@example.com", role: ROLE_SUPER_ADMIN, name: "Super Admin User" };
+  // return { id: "company-1", email: "company@example.com", role: ROLE_COMPANY, name: "Company User" };
   
   return null;
 }
@@ -55,7 +68,7 @@ export function isAuthenticated(): boolean {
  */
 export function isAdmin(): boolean {
   const user = getCurrentUser();
-  return user?.role === "admin";
+  return user?.role === ROLE_ADMIN;
 }
 
 /**
@@ -65,7 +78,46 @@ export function isAdmin(): boolean {
  */
 export function isCompany(): boolean {
   const user = getCurrentUser();
-  return user?.role === "company";
+  return user?.role === ROLE_COMPANY;
+}
+
+/**
+ * Check if user has super_admin role
+ * 
+ * @returns true if user is authenticated and has super_admin role
+ */
+export function isSuperAdmin(): boolean {
+  const user = getCurrentUser();
+  return user?.role === ROLE_SUPER_ADMIN;
+}
+
+/**
+ * Check if user has admin-level privileges (admin or super_admin)
+ * 
+ * @returns true if user is authenticated and has admin-level role
+ */
+export function isAdminLevel(): boolean {
+  const user = getCurrentUser();
+  if (!user || !user.role) return false;
+  return user.role === ROLE_ADMIN || user.role === ROLE_SUPER_ADMIN;
+}
+
+/**
+ * Generic role checker
+ * 
+ * @param requiredRole - The role to check for
+ * @returns true if user has the required role
+ */
+export function hasRole(requiredRole: Exclude<UserRole, null>): boolean {
+  const user = getCurrentUser();
+  if (!user) return false;
+  
+  if (requiredRole === ROLE_ADMIN || requiredRole === ROLE_SUPER_ADMIN) {
+    // For admin-level roles, check if user has admin-level privileges
+    return user.role === ROLE_ADMIN || user.role === ROLE_SUPER_ADMIN;
+  }
+  
+  return user.role === requiredRole;
 }
 
 /**
@@ -135,14 +187,14 @@ export function canAccessRoute(pathname: string, user: User | null): boolean {
     return false;
   }
   
-  // Admin routes - only admins
+  // Admin routes - admin and super_admin can access
   if (isAdminRoute(pathname)) {
-    return user.role === "admin";
+    return user.role === ROLE_ADMIN || user.role === ROLE_SUPER_ADMIN;
   }
   
   // Company routes - only companies
   if (isCompanyRoute(pathname)) {
-    return user.role === "company";
+    return user.role === ROLE_COMPANY;
   }
   
   // Default deny for unknown protected routes

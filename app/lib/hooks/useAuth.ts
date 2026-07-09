@@ -10,7 +10,16 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { User, getCurrentUser, isAdmin, isCompany } from "@/app/lib/auth";
+import { 
+  User, 
+  getCurrentUser, 
+  isAdmin, 
+  isCompany, 
+  isSuperAdmin,
+  isAdminLevel,
+  hasRole,
+  type UserRole,
+} from "@/app/lib/auth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -31,31 +40,61 @@ export function useAuth() {
     isLoading,
     isAuthenticated: user !== null,
     isAdmin: isAdmin(),
+    isSuperAdmin: isSuperAdmin(),
+    isAdminLevel: isAdminLevel(),
     isCompany: isCompany(),
+    hasRole: (role: Exclude<UserRole, null>) => hasRole(role),
   };
 }
 
 /**
  * Hook to protect admin routes
  * 
+ * Allows both admin and super_admin roles
+ * 
  * Usage:
  * export default function AdminPage() {
- *   const { isAdmin, isLoading } = useProtectAdmin();
+ *   const { isAdminLevel, isLoading } = useProtectAdmin();
  *   if (isLoading) return <div>Loading...</div>;
  *   return <div>Admin content</div>;
  * }
  */
 export function useProtectAdmin() {
-  const { isAdmin: userIsAdmin, isLoading } = useAuth();
+  const { isAdminLevel, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !userIsAdmin) {
+    if (!isLoading && !isAdminLevel) {
       router.push("/access-denied");
     }
-  }, [isLoading, userIsAdmin, router]);
+  }, [isLoading, isAdminLevel, router]);
 
-  return { isAdmin: userIsAdmin, isLoading };
+  return { isAdminLevel, isLoading };
+}
+
+/**
+ * Hook to protect super_admin only routes
+ * 
+ * Only allows super_admin role
+ * 
+ * Usage:
+ * export default function SuperAdminPage() {
+ *   const { isSuperAdmin, isLoading } = useProtectSuperAdmin();
+ *   if (isLoading) return <div>Loading...</div>;
+ *   return <div>Super Admin content</div>;
+ * }
+ */
+export function useProtectSuperAdmin() {
+  const { isSuperAdmin: userIsSuperAdmin, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !userIsSuperAdmin) {
+      router.push("/access-denied");
+    }
+  }, [isLoading, userIsSuperAdmin, router]);
+
+  return { isSuperAdmin: userIsSuperAdmin, isLoading };
 }
 
 /**

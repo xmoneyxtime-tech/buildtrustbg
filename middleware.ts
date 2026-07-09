@@ -3,9 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 /**
  * Middleware for route protection
  * 
+ * Note: Role constants are inlined here due to edge runtime limitations.
+ * When integrating real authentication, ensure role values match those in:
+ * @see app/lib/constants/roles.ts
+ * 
  * TODO: Replace mock authentication with real auth verification
  * This should check JWT tokens, sessions, or cookies from your auth provider
  */
+
+// Role constants (must match app/lib/constants/roles.ts)
+const ROLE_COMPANY = "company";
+const ROLE_ADMIN = "admin";
+const ROLE_SUPER_ADMIN = "super_admin";
+const ADMIN_ROLES = [ROLE_ADMIN, ROLE_SUPER_ADMIN];
 
 function isProtectedRoute(pathname: string): boolean {
   return (
@@ -38,16 +48,16 @@ export function middleware(request: NextRequest) {
     const userIsAuthenticated = false; // TODO: Replace with real auth check
     const userRole: string | null = null; // TODO: Replace with real role from token/session
 
-    // If admin route and user is not admin
+    // If admin route and user is not admin/super_admin
     if (isAdminRoute(pathname)) {
-      if (!userIsAuthenticated || userRole !== "admin") {
+      if (!userIsAuthenticated || !userRole || !ADMIN_ROLES.includes(userRole)) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
     }
 
     // If company route and user is not company
     if (isCompanyRoute(pathname)) {
-      if (!userIsAuthenticated || userRole !== "company") {
+      if (!userIsAuthenticated || userRole !== ROLE_COMPANY) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
     }
