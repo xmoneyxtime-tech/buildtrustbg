@@ -228,6 +228,19 @@ export const enTranslations: Translations = {
     other: "Other",
   },
 
+  // Access Control
+  accessControl: {
+    accessDenied: "Access Denied",
+    accessDeniedTitle: "Access Denied",
+    accessDeniedDescription: "You do not have permission to access this page. Only administrators and approved companies have access to protected areas.",
+    notAuthorized: "You are not authorized to access this resource.",
+    contactAdmin: "Contact Administrator",
+    goHome: "Go Home",
+    adminOnly: "This page is only accessible to administrators.",
+    companyOnly: "This page is only accessible to registered companies.",
+    loginRequired: "You need to log in to access this page.",
+  },
+
   // Forms
   forms: {
     name: "Name",

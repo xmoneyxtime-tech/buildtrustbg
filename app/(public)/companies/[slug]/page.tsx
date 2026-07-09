@@ -181,7 +181,8 @@ export default function CompanyProfilePage() {
             </Panel>
             <Panel title="Социални мрежи" description="Връзки за контакт и проверка на компанията.">
               <div className="space-y-3 text-sm leading-7 text-slate-700">
-                <p>Facebook: {companyProfilePlaceholder.facebook}</p>
+                {/* TODO: Re-enable Facebook link when social media presence is ready */}
+                {/* <p>Facebook: {companyProfilePlaceholder.facebook}</p> */}
                 <p>Instagram: {companyProfilePlaceholder.instagram}</p>
                 <p>LinkedIn: {companyProfilePlaceholder.linkedin}</p>
               </div>

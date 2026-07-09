@@ -233,6 +233,19 @@ export interface Translations {
     other: string;
   };
 
+  // Access Control
+  accessControl: {
+    accessDenied: string;
+    accessDeniedTitle: string;
+    accessDeniedDescription: string;
+    notAuthorized: string;
+    contactAdmin: string;
+    goHome: string;
+    adminOnly: string;
+    companyOnly: string;
+    loginRequired: string;
+  };
+
   // Forms
   forms: {
     name: string;

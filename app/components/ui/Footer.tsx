@@ -32,7 +32,8 @@ export function Footer() {
 
   const contactInfo = [
     { label: t("footer.email"), value: "buildtrustbg@abv.bg", href: "mailto:buildtrustbg@abv.bg" },
-    { label: t("footer.facebook"), value: "BuildTrustBG", href: "https://facebook.com/buildtrustbg" },
+    // TODO: Re-enable Facebook link when social media presence is ready
+    // { label: t("footer.facebook"), value: "BuildTrustBG", href: "https://facebook.com/buildtrustbg" },
   ];
 
   return (

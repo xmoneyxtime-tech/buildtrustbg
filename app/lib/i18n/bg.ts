@@ -228,6 +228,19 @@ export const bgTranslations: Translations = {
     other: "Други",
   },
 
+  // Access Control
+  accessControl: {
+    accessDenied: "Достъпът е отказан",
+    accessDeniedTitle: "Достъпът е отказан",
+    accessDeniedDescription: "Нямате разрешение да достъпите тази страница. Само администратори и одобрени компании имат достъп до защитените зони.",
+    notAuthorized: "Не сте оправомощени да достъпите този ресурс.",
+    contactAdmin: "Свържете се с администратор",
+    goHome: "Върни се в начало",
+    adminOnly: "Тази страница е достъпна само за администратори.",
+    companyOnly: "Тази страница е достъпна само за регистрирани компании.",
+    loginRequired: "Требва да влезете в профила си, за да достъпите тази страница.",
+  },
+
   // Forms
   forms: {
     name: "Име",
