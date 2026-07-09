@@ -10,11 +10,7 @@ export default function PremiumCompaniesPage() {
   const premiumCompanies = mockCompanies.filter((c) => c.verification === "premium");
 
   return (
-    <DashboardShell
-      role="admin"
-      title="Premium Фирми"
-      subtitle="Управляйте Premium абонаменти"
-    >
+    <DashboardShell role="admin">
       <div className="space-y-6">
         <AdminNotice />
         {premiumCompanies.length > 0 ? (

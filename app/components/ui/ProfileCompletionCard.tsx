@@ -36,22 +36,22 @@ export function ProfileCompletionCard({ completionPercentage = 0 }: ProfileCompl
 
   return (
     <div className="rounded-[28px] border border-slate-200/80 bg-white p-8 shadow-[0_18px_50px_-24px_rgba(15,76,129,0.16)]">
-      <h2 className="text-xl font-semibold text-slate-900">{t("profileCompletion.title")}</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-slate-900">{t("profileCompletion.title")}</h2>
+        <span className={`text-2xl font-bold ${getProgressTextColor(completionPercentage)}`}>
+          {completionPercentage}%
+        </span>
+      </div>
 
-      <div className="mt-6 flex items-end gap-4">
-        <div className="flex-1">
-          <div className="mb-3 flex items-center justify-between text-sm">
-            <span className="font-medium text-slate-700">{t("profileCompletion.progress")}</span>
-            <span className={`text-xl font-bold ${getProgressTextColor(completionPercentage)}`}>
-              {completionPercentage}%
-            </span>
-          </div>
-          <div className="h-3 overflow-hidden rounded-full bg-slate-200">
-            <div
-              className={`h-full transition-all duration-500 ease-out ${getProgressColor(completionPercentage)}`}
-              style={{ width: `${completionPercentage}%` }}
-            />
-          </div>
+      <div className="mt-6">
+        <div className="mb-2 flex items-center justify-between text-sm">
+          <span className="font-medium text-slate-600">{t("profileCompletion.progress")}</span>
+        </div>
+        <div className="h-3 overflow-hidden rounded-full bg-slate-200">
+          <div
+            className={`h-full transition-all duration-500 ease-out ${getProgressColor(completionPercentage)}`}
+            style={{ width: `${completionPercentage}%` }}
+          />
         </div>
       </div>
 
@@ -59,11 +59,32 @@ export function ProfileCompletionCard({ completionPercentage = 0 }: ProfileCompl
         <p className="mb-4 text-sm font-semibold text-slate-900">{t("profileCompletion.missingItems")}:</p>
         <div className="grid gap-3 sm:grid-cols-2">
           {checklistItems.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-[#F8FAFC] p-3">
-              <div className="flex h-5 w-5 items-center justify-center rounded-md border border-slate-300 bg-white">
-                {item.completed ? <span className="text-green-600">✓</span> : <span className="text-slate-300">◻</span>}
+            <div
+              key={idx}
+              className={`flex items-center gap-3 rounded-2xl border px-4 py-3 transition ${
+                item.completed
+                  ? "border-emerald-200 bg-emerald-50 hover:border-emerald-300 hover:bg-emerald-100"
+                  : "border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white"
+              }`}
+            >
+              <div
+                className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border-2 ${
+                  item.completed
+                    ? "border-emerald-500 bg-emerald-500"
+                    : "border-slate-300 bg-white"
+                }`}
+              >
+                {item.completed && (
+                  <span className="text-xs font-bold text-white">✓</span>
+                )}
               </div>
-              <span className="text-sm text-slate-700">{item.label}</span>
+              <span
+                className={`flex-1 text-sm font-medium ${
+                  item.completed ? "text-emerald-700" : "text-slate-700"
+                }`}
+              >
+                {item.label}
+              </span>
             </div>
           ))}
         </div>

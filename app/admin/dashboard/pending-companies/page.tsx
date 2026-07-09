@@ -9,11 +9,7 @@ export default function PendingCompaniesPage() {
   const pendingCompanies = mockCompanies.filter((c) => c.status === "pending");
 
   return (
-    <DashboardShell
-      role="admin"
-      title="Очаква се одобрение"
-      subtitle="Преглеждайте профили, които чакат администраторско одобрение"
-    >
+    <DashboardShell role="admin">
       <div className="space-y-6">
         <AdminNotice />
         {pendingCompanies.length > 0 ? (

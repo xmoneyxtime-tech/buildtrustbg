@@ -8,11 +8,7 @@ export default function GalleryPage() {
   const { t } = useTranslation();
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.galleryTitle")}
-      subtitle={t("dashboardCompany.galleryDescription")}
-    >
+    <DashboardShell role="company">
       <EmptyState
         icon="🖼️"
         title={t("emptyStates.noGallery")}

@@ -7,11 +7,7 @@ import { mockGoldApplications } from "@/app/lib/mock-admin-data";
 
 export default function GoldVerificationPage() {
   return (
-    <DashboardShell
-      role="admin"
-      title="Gold Верификация"
-      subtitle="Управляйте заявки за Gold верификация"
-    >
+    <DashboardShell role="admin">
       <div className="space-y-6">
         <AdminNotice />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

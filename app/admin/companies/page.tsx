@@ -8,11 +8,7 @@ import { mockCompanies } from "@/app/lib/mock-admin-data";
 
 export default function AdminCompaniesPage() {
   return (
-    <DashboardShell
-      role="admin"
-      title="Компании"
-      subtitle="Управляйте всички регистрирани фирми на платформата"
-    >
+    <DashboardShell role="admin">
       <div className="space-y-6">
         <AdminNotice />
         <AdminTable

@@ -20,11 +20,7 @@ export default function EditProfilePage() {
   const [profile, setProfile] = useState(initialProfile);
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.editProfileTitle")}
-      subtitle={t("dashboardCompany.editProfileDescription")}
-    >
+    <DashboardShell role="company">
       <Panel title={t("dashboardCompany.basicInfo")} description={t("dashboardCompany.basicInfoDescription")}>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="block text-sm text-slate-700">

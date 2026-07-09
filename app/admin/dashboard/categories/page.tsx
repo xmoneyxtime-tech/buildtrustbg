@@ -27,7 +27,7 @@ export default function CategoriesPage() {
   };
 
   return (
-    <DashboardShell role="admin" title="Категории" subtitle="Управляйте категории услуги">
+    <DashboardShell role="admin">
       <div className="space-y-6">
         <button
           onClick={() => setShowForm(!showForm)}

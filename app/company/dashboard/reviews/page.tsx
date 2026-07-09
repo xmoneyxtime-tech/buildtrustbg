@@ -8,11 +8,7 @@ export default function ReviewsPage() {
   const { t } = useTranslation();
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.reviewsTitle")}
-      subtitle={t("dashboardCompany.reviewsDescription")}
-    >
+    <DashboardShell role="company">
       <EmptyState
         icon="⭐"
         title={t("emptyStates.noReviews")}

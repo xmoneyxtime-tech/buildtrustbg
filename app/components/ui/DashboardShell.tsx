@@ -10,12 +10,10 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type DashboardShellProps = {
   role: "company" | "admin";
-  title: string;
-  subtitle: string;
   children: ReactNode;
 };
 
-export function DashboardShell({ role, title, subtitle, children }: DashboardShellProps) {
+export function DashboardShell({ role, children }: DashboardShellProps) {
   const pathname = usePathname();
   const { t } = useTranslation();
 
@@ -100,13 +98,6 @@ export function DashboardShell({ role, title, subtitle, children }: DashboardShe
 
         <section className="flex-1">
           <Panel className="border-none bg-transparent p-0 shadow-none">
-            <div className="mb-6 flex flex-col gap-3 rounded-[24px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_50px_-24px_rgba(15,76,129,0.2)]">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#F58220]">
-                {role === "company" ? t("dashboardCompany.companyDashboard") : t("adminPages.adminDashboard")}
-              </p>
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{title}</h1>
-              <p className="max-w-2xl text-base leading-8 text-slate-700">{subtitle}</p>
-            </div>
             <div className="space-y-6">{children}</div>
           </Panel>
         </section>

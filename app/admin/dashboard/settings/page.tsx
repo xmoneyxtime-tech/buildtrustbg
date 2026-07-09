@@ -25,7 +25,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <DashboardShell role="admin" title="Настройки" subtitle="Управляйте настройките на платформата">
+    <DashboardShell role="admin">
       <div className="space-y-6">
         {/* General Settings */}
         <div className="rounded-[20px] border border-slate-200/80 bg-white p-8 shadow-[0_12px_32px_-16px_rgba(15,76,129,0.12)]">

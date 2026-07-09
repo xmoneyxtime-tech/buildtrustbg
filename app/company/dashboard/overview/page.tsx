@@ -13,11 +13,7 @@ export default function CompanyOverviewPage() {
   const { t } = useTranslation();
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.overviewTitle")}
-      subtitle={t("dashboardCompany.overviewDescription")}
-    >
+    <DashboardShell role="company">
       <div className="space-y-8">
         {/* Welcome Hero */}
         <OnboardingHero />

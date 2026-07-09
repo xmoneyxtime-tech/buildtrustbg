@@ -8,11 +8,7 @@ export default function MessagesPage() {
   const { t } = useTranslation();
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.messagesTitle")}
-      subtitle={t("dashboardCompany.messagesDescription")}
-    >
+    <DashboardShell role="company">
       <EmptyState
         icon="💌"
         title={t("emptyStates.noMessages")}

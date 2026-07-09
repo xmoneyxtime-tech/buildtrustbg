@@ -10,11 +10,7 @@ export default function SubscriptionPage() {
   const { t } = useTranslation();
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.subscriptionTitle")}
-      subtitle={t("dashboardCompany.subscriptionDescription")}
-    >
+    <DashboardShell role="company">
       <div className="space-y-6">
         {/* Current Plan */}
         <div className="rounded-[24px] border border-emerald-200/80 bg-emerald-50/50 p-6">

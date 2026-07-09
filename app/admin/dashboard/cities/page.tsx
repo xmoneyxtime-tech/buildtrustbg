@@ -29,7 +29,7 @@ export default function CitiesPage() {
   }, [searchQuery]);
 
   return (
-    <DashboardShell role="admin" title="Градове" subtitle="Управляйте градове и региони">
+    <DashboardShell role="admin">
       <div className="space-y-6">
         <input
           type="text"

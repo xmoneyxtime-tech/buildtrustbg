@@ -30,11 +30,7 @@ export default function VerificationStatusPage() {
   ];
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.verificationTitle")}
-      subtitle={t("dashboardCompany.verificationDescription")}
-    >
+    <DashboardShell role="company">
       <div className="space-y-6">
         {/* Current Status */}
         <div className="rounded-[24px] border border-[#F58220]/20 bg-[#FFF7EE]/60 p-6">

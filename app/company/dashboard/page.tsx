@@ -2,16 +2,27 @@
 
 import { useTranslation } from "@/app/lib/i18n";
 import { DashboardShell } from "@/app/components/ui";
-import { OnboardingHero } from "@/app/components/ui/OnboardingHero";
+import { PremiumHero } from "@/app/components/ui/PremiumHero";
+import { KPICard } from "@/app/components/ui/KPICard";
 import { ProfileCompletionCard } from "@/app/components/ui/ProfileCompletionCard";
 import { NextStepsCard } from "@/app/components/ui/NextStepsCard";
-import { StatisticCard } from "@/app/components/ui/StatisticCard";
+import { ActivityTimeline } from "@/app/components/ui/ActivityTimeline";
+import { AIInsightsCard } from "@/app/components/ui/AIInsightsCard";
 import { GoldVerificationCard } from "@/app/components/ui/GoldVerificationCard";
 import { PremiumCard } from "@/app/components/ui/PremiumCard";
-import Link from "next/link";
+import { QuickActionsCard } from "@/app/components/ui/QuickActionsCard";
 
 export default function CompanyDashboardPage() {
   const { t } = useTranslation();
+
+  // Demo data - in a real app, this would come from your API
+  const companyData = {
+    name: "Tech Solutions Ltd",
+    trustScore: 0,
+    profileCompletion: 0,
+    isVerified: false,
+    isPremium: false,
+  };
 
   const nextSteps = [
     {
@@ -56,66 +67,75 @@ export default function CompanyDashboardPage() {
       href: "/company/dashboard/verification-status",
       priority: "medium" as const,
     },
-    {
-      icon: "⭐",
-      label: t("nextSteps.collectReviews"),
-      description: t("quickActions.reviewsDesc"),
-      href: "/company/dashboard/reviews",
-      priority: "medium" as const,
-    },
-  ];
-
-  const quickActions = [
-    { href: "/company/dashboard/edit-profile", icon: "✏️", label: t("quickActions.editProfile") },
-    { href: "/company/dashboard/gallery", icon: "🖼️", label: t("quickActions.gallery") },
-    { href: "/company/dashboard/projects", icon: "🏗️", label: t("quickActions.projects") },
-    { href: "/company/dashboard/services", icon: "⚙️", label: t("quickActions.services") },
-    { href: "/company/dashboard/reviews", icon: "💬", label: t("quickActions.reviews") },
-    { href: "/company/dashboard/messages", icon: "💌", label: t("quickActions.messages") },
-    { href: "/company/dashboard/verification-status", icon: "🛡️", label: t("dashboard.verification") },
-    { href: "/company/dashboard/subscription", icon: "💎", label: t("dashboard.subscription") },
   ];
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.overviewTitle")}
-      subtitle={t("dashboardCompany.overviewDescription")}
-    >
+    <DashboardShell role="company">
       <div className="space-y-8">
-        {/* Welcome Hero */}
-        <OnboardingHero />
+        {/* Premium Hero Section */}
+        <PremiumHero
+          companyName={companyData.name}
+          trustScore={companyData.trustScore}
+          isVerified={companyData.isVerified}
+          isPremium={companyData.isPremium}
+        />
 
-        {/* Top Stats Row */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatisticCard label={t("profileCompletion.title")} value={0} icon="📋" suffix="%" />
-          <StatisticCard label={t("stats.reviews")} value={0} icon="⭐" />
-          <StatisticCard label={t("stats.visits")} value={0} icon="👁️" />
-          <StatisticCard label={t("stats.inquiries")} value={0} icon="📬" />
-        </div>
-
-        {/* Profile Completion + Next Steps */}
-        <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
-          <ProfileCompletionCard completionPercentage={0} />
-          <NextStepsCard steps={nextSteps} />
+        {/* KPI Cards Grid - 6 Cards */}
+        <div>
+          <h2 className="mb-6 text-xl font-semibold text-slate-900">{t("dashboard.statisticsTitle")}</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+            <KPICard
+              label={t("dashboardCompany.kpiProfileViews")}
+              value={0}
+              icon="👁️"
+              subtext={t("dashboardCompany.kpiLast30Days")}
+            />
+            <KPICard
+              label={t("dashboardCompany.kpiReviews")}
+              value={0}
+              icon="⭐"
+              subtext={t("dashboardCompany.kpiAverage") + ": 4.5"}
+            />
+            <KPICard
+              label={t("dashboardCompany.kpiProjects")}
+              value={0}
+              icon="🏗️"
+              subtext={t("dashboardCompany.kpiCompleted")}
+            />
+            <KPICard
+              label={t("dashboardCompany.kpiGallery")}
+              value={0}
+              icon="🖼️"
+              subtext={t("dashboardCompany.kpiImagesUploaded")}
+            />
+            <KPICard
+              label={t("dashboardCompany.kpiMessages")}
+              value={0}
+              icon="💬"
+              subtext={t("dashboardCompany.kpiLast30Days")}
+            />
+            <KPICard
+              label={t("dashboardCompany.kpiServices")}
+              value={0}
+              icon="⚙️"
+              subtext={t("dashboardCompany.kpiCompleted")}
+            />
+          </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="rounded-[28px] border border-slate-200/80 bg-white p-8 shadow-[0_18px_50px_-24px_rgba(15,76,129,0.16)]">
-          <h2 className="mb-6 text-xl font-semibold text-slate-900">{t("dashboard.quickActionsTitle")}</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {quickActions.map((action) => (
-              <Link
-                key={action.href}
-                href={action.href}
-                className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 transition hover:border-[#0F4C81]/20 hover:bg-white hover:shadow-sm"
-              >
-                <span className="text-2xl">{action.icon}</span>
-                <span className="text-sm font-medium text-slate-800 group-hover:text-[#0F4C81]">{action.label}</span>
-                <span className="ml-auto text-slate-400 group-hover:text-[#0F4C81]">→</span>
-              </Link>
-            ))}
-          </div>
+        <QuickActionsCard />
+
+        {/* Profile Completion + AI Insights */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ProfileCompletionCard completionPercentage={companyData.profileCompletion} />
+          <AIInsightsCard />
+        </div>
+
+        {/* Activity Timeline + Next Steps */}
+        <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+          <ActivityTimeline />
+          <NextStepsCard steps={nextSteps} />
         </div>
 
         {/* Upgrade Cards */}

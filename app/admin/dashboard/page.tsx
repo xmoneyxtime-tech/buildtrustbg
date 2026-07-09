@@ -18,11 +18,7 @@ export default function AdminDashboardPage() {
   const pendingApprovals = mockCompanies.filter((c) => c.status === "pending");
 
   return (
-    <DashboardShell
-      role="admin"
-      title="Dashboard"
-      subtitle="Преглед на платформата BuildTrustBG"
-    >
+    <DashboardShell role="admin">
       <div className="space-y-8">
         {/* Admin Notice */}
         <AdminNotice />

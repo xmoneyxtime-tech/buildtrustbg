@@ -8,11 +8,7 @@ export default function ProjectsPage() {
   const { t } = useTranslation();
 
   return (
-    <DashboardShell
-      role="company"
-      title={t("dashboardCompany.projectsTitle")}
-      subtitle={t("dashboardCompany.projectsDescription")}
-    >
+    <DashboardShell role="company">
       <EmptyState
         icon="🏗️"
         title={t("emptyStates.noProjects")}
