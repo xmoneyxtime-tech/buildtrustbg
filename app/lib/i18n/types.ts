@@ -380,6 +380,10 @@ export interface Translations {
     likes: string;
     basicInfo: string;
     basicInfoDescription: string;
+    generalInfo: string;
+    contactInfo: string;
+    location: string;
+    branding: string;
     profileComplete: string;
     editProfile: string;
     viewProfile: string;
@@ -482,9 +486,14 @@ export interface Translations {
     email: string;
     phone: string;
     city: string;
+    country: string;
+    address: string;
+    industry: string;
     service: string;
     website: string;
     description: string;
+    logoUrl: string;
+    coverImageUrl: string;
     basicInfo: string;
     saveSettings: string;
     selectOption: string;
