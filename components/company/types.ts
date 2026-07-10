@@ -1,3 +1,21 @@
+export type CompanyPublicProject = {
+  id: string;
+  slug: string;
+  title: string;
+  shortDescription: string;
+  description: string;
+  category: string;
+  city: string;
+  completedAt: string | null;
+  featured: boolean;
+  images: Array<{
+    id: string;
+    imageUrl: string;
+    altText: string | null;
+    order: number;
+  }>;
+};
+
 export type CompanyPublicProfile = {
   id: string;
   slug: string;
@@ -12,6 +30,6 @@ export type CompanyPublicProfile = {
   createdAt: Date;
   updatedAt: Date;
   galleryItems: string[];
-  projects: string[];
+  projects: CompanyPublicProject[];
   reviews: string[];
 };

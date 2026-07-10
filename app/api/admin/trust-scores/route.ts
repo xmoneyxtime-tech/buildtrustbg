@@ -29,7 +29,16 @@ export async function GET() {
       identityVerified: true,
       phoneVerified: true,
       portfolioCount: true,
-      projectsCount: true,
+      projects: {
+        where: {
+          status: {
+            not: "ARCHIVED",
+          },
+        },
+        select: {
+          id: true,
+        },
+      },
       reviewsCount: true,
       averageRating: true,
       yearsInBusiness: true,
@@ -45,7 +54,10 @@ export async function GET() {
     id: company.id,
     name: company.companyName,
     status: company.status,
-    trust: calculateTrustScore(company),
+    trust: calculateTrustScore({
+      ...company,
+      projectsCount: company.projects.length,
+    }),
   }));
 
   return NextResponse.json({ companies: result });

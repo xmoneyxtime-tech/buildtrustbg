@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { calculateTrustScore } from "@/app/lib/trust-score";
+import { listPublicProjectsByCompany } from "@/app/lib/projects";
 import {
   CompanyAbout,
   CompanyGallery,
@@ -41,7 +42,7 @@ function toCompanyPublicProfile(company: {
   status: "PENDING" | "APPROVED" | "REJECTED";
   createdAt: Date;
   updatedAt: Date;
-}): CompanyPublicProfile {
+}, projects: CompanyPublicProfile["projects"]): CompanyPublicProfile {
   const services = company.service
     .split(",")
     .map((service) => service.trim())
@@ -61,7 +62,7 @@ function toCompanyPublicProfile(company: {
     createdAt: company.createdAt,
     updatedAt: company.updatedAt,
     galleryItems: [],
-    projects: [],
+    projects,
     reviews: [],
   };
 }
@@ -99,6 +100,15 @@ export default async function CompanyProfilePage({ params }: CompanyProfilePageP
       galleryCount: true,
       responseTimeHours: true,
       activeSubscription: true,
+      projects: {
+        where: {
+          published: true,
+          status: "PUBLISHED",
+        },
+        select: {
+          id: true,
+        },
+      },
       service: true,
       status: true,
       createdAt: true,
@@ -111,6 +121,8 @@ export default async function CompanyProfilePage({ params }: CompanyProfilePageP
   if (!company) {
     notFound();
   }
+
+  const publicProjects = await listPublicProjectsByCompany(company.id);
 
   const trust = calculateTrustScore({
     id: company.id,
@@ -129,7 +141,7 @@ export default async function CompanyProfilePage({ params }: CompanyProfilePageP
     identityVerified: company.identityVerified,
     phoneVerified: company.phoneVerified,
     portfolioCount: company.portfolioCount,
-    projectsCount: company.projectsCount,
+    projectsCount: company.projects.length,
     reviewsCount: company.reviewsCount,
     averageRating: company.averageRating,
     yearsInBusiness: company.yearsInBusiness,
@@ -139,7 +151,21 @@ export default async function CompanyProfilePage({ params }: CompanyProfilePageP
     activeSubscription: company.activeSubscription,
   });
 
-  const companyProfile = toCompanyPublicProfile(company);
+  const companyProfile = toCompanyPublicProfile(
+    company,
+    publicProjects.map((project) => ({
+      id: project.id,
+      slug: project.slug,
+      title: project.title,
+      shortDescription: project.shortDescription,
+      description: project.description,
+      category: project.category,
+      city: project.city,
+      completedAt: project.completedAt,
+      featured: project.featured,
+      images: project.images,
+    }))
+  );
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">

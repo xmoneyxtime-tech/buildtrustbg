@@ -31,7 +31,16 @@ export async function GET() {
       identityVerified: true,
       phoneVerified: true,
       portfolioCount: true,
-      projectsCount: true,
+      projects: {
+        where: {
+          status: {
+            not: "ARCHIVED",
+          },
+        },
+        select: {
+          id: true,
+        },
+      },
       reviewsCount: true,
       averageRating: true,
       yearsInBusiness: true,
@@ -46,7 +55,10 @@ export async function GET() {
     return NextResponse.json({ error: "Company not found" }, { status: 404 });
   }
 
-  const trust = calculateTrustScore(company);
+  const trust = calculateTrustScore({
+    ...company,
+    projectsCount: company.projects.length,
+  });
 
   return NextResponse.json({
     companyId: company.id,

@@ -25,7 +25,16 @@ export default async function AdminCompaniesPage() {
       identityVerified: true,
       phoneVerified: true,
       portfolioCount: true,
-      projectsCount: true,
+      projects: {
+        where: {
+          status: {
+            not: "ARCHIVED",
+          },
+        },
+        select: {
+          id: true,
+        },
+      },
       reviewsCount: true,
       averageRating: true,
       yearsInBusiness: true,
@@ -48,7 +57,10 @@ export default async function AdminCompaniesPage() {
         )}
 
         {companies.map((company) => {
-          const trust = calculateTrustScore(company);
+          const trust = calculateTrustScore({
+            ...company,
+            projectsCount: company.projects.length,
+          });
 
           return (
             <section key={company.id} className="rounded-3xl border border-slate-200 bg-white p-6">
