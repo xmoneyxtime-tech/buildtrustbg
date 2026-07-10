@@ -1,103 +1,135 @@
-/**
- * Trust Score Engine Types
- * 
- * Complete type definitions for the trust score calculation system.
- * All types are exported for use across the platform.
- */
-
-/**
- * Individual trust factor with its score and weight
- */
-export type TrustFactor = {
-  score: number; // 0-100
-  weight: number; // normalized to 0-1
-  name: string;
-};
-
-/**
- * Trust level categories based on overall score
- */
 export type TrustLevel =
-  | 'Legendary'    // 95-100
-  | 'Excellent'    // 90-94
-  | 'Very Good'    // 80-89
-  | 'Good'         // 70-79
-  | 'Fair'         // 60-69
-  | 'Weak'         // 40-59
-  | 'Poor';        // 0-39
+  | "Bronze"
+  | "Silver"
+  | "Gold"
+  | "Platinum"
+  | "Legendary"
+  | "Excellent"
+  | "Very Good"
+  | "Good"
+  | "Fair"
+  | "Weak"
+  | "Poor";
 
-/**
- * Confidence level in the trust score result
- */
 export type ConfidenceLevel =
-  | 'Very High'    // >= 90% confidence
-  | 'High'         // >= 75% confidence
-  | 'Medium'       // >= 50% confidence
-  | 'Low'          // >= 25% confidence
-  | 'Very Low';    // < 25% confidence
+  | "Very High"
+  | "High"
+  | "Medium"
+  | "Low"
+  | "Very Low";
 
-/**
- * Category scores breakdown
- */
 export type CategoryScore = {
-  Profile: number;          // Profile completeness & verification
-  Reviews: number;          // Review count, rating, consistency
-  Verification: number;     // Company & domain verification
-  Engagement: number;       // Response rate & speed
-  Reputation: number;       // Age, freshness, consistency
+  Profile: number;
+  Reviews: number;
+  Verification: number;
+  Engagement: number;
+  Reputation: number;
 };
 
-/**
- * Input data for trust score calculation
- */
+export type TrustFactorKey =
+  | "verifiedCompany"
+  | "identityVerified"
+  | "profileCompleteness"
+  | "logoUploaded"
+  | "coverUploaded"
+  | "website"
+  | "phone"
+  | "description"
+  | "portfolio"
+  | "projects"
+  | "reviews"
+  | "averageRating"
+  | "yearsInBusiness"
+  | "certificates"
+  | "gallery"
+  | "responseTime"
+  | "activeSubscription";
+
+export type TrustBreakdownItem = {
+  key: TrustFactorKey;
+  label: string;
+  points: number;
+  earned: boolean;
+};
+
+export type TrustSuggestion = {
+  key: TrustFactorKey;
+  label: string;
+  missingPoints: number;
+};
+
+export type TrustScoreResult = {
+  score: number;
+  level: TrustLevel;
+  profileCompleteness: number;
+  breakdown: TrustBreakdownItem[];
+  suggestions: TrustSuggestion[];
+  verifiedBadges: string[];
+  overallScore?: number;
+  trustLevel?: TrustLevel;
+  confidenceLevel?: ConfidenceLevel;
+  categoryScores?: CategoryScore;
+  factors?: Record<string, number>;
+  calculatedAt?: string;
+};
+
+export type TrustScoreCompanyInput = {
+  id: string;
+  companyName: string;
+  email: string;
+  phone: string;
+  description: string;
+  industry: string | null;
+  website: string | null;
+  country: string | null;
+  city: string;
+  address: string | null;
+  logoUrl: string | null;
+  coverUrl: string | null;
+  isVerified: boolean;
+  identityVerified: boolean;
+  phoneVerified: boolean;
+  portfolioCount: number;
+  projectsCount: number;
+  reviewsCount: number;
+  averageRating: number;
+  yearsInBusiness: number | null;
+  certificatesCount: number;
+  galleryCount: number;
+  responseTimeHours: number | null;
+  activeSubscription: boolean;
+};
+
 export type TrustCalculationInput = {
-  // Profile
-  profileCompleteness: number; // 0-100 (percentage of fields filled)
-  
-  // Verification
+  profileCompleteness: number;
   isVerifiedCompany: boolean;
   isVerifiedDomain: boolean;
-  
-  // Reviews
-  reviewCount: number; // total number of reviews
-  averageRating: number; // 1-5 or normalized 0-100
-  reviewConsistency: number; // 0-100 (std dev of ratings)
-  
-  // Company History
-  companyAgeInYears: number; // how long company has existed
-  
-  // Engagement
-  responseRate: number; // 0-100 (percentage of inquiries responded to)
-  averageResponseTimeHours: number; // how fast they respond
-  
-  // Freshness
-  daysSinceLastReview: number; // how recent the last review is
-};
-
-/**
- * Complete trust score calculation result
- */
-export type TrustScoreResult = {
-  overallScore: number; // 0-100
-  trustLevel: TrustLevel;
-  confidenceLevel: ConfidenceLevel;
-  categoryScores: CategoryScore;
-  factors: Record<string, number>; // individual factor scores
-  calculatedAt: string; // ISO timestamp
-};
-
-/**
- * Raw weight configuration before normalization
- */
-export type WeightConfig = {
-  profileCompleteness: number;
-  verifiedCompany: number;
-  verifiedDomain: number;
   reviewCount: number;
   averageRating: number;
   reviewConsistency: number;
-  companyAge: number;
+  companyAgeInYears: number;
   responseRate: number;
-  responseSpeed: number;
-  reviewFreshness: number;
+  averageResponseTimeHours: number;
+  daysSinceLastReview: number;
+};
+
+export type TrustFactorConfig = {
+  key: TrustFactorKey;
+  label: string;
+  maxPoints: number;
+};
+
+export type TrustLevelConfig = {
+  level: TrustLevel;
+  minScore: number;
+  maxScore: number;
+};
+
+export type TrustComputation = {
+  score: number;
+  level: TrustLevel;
+  profileCompleteness: number;
+  breakdown: TrustBreakdownItem[];
+  suggestions: TrustSuggestion[];
+  verifiedBadges: string[];
 };

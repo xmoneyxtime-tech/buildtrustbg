@@ -17,6 +17,10 @@ interface TrustBadgeProps {
  * Display labels for trust levels (English -> Bulgarian)
  */
 const trustLevelLabels: Record<TrustLevel, string> = {
+  'Bronze': 'Bronze',
+  'Silver': 'Silver',
+  'Gold': 'Gold',
+  'Platinum': 'Platinum',
   'Legendary': 'Легендарен',
   'Excellent': 'Отличен',
   'Very Good': 'Много добър',
@@ -31,6 +35,14 @@ const trustLevelLabels: Record<TrustLevel, string> = {
  */
 function getBadgeColor(level: TrustLevel): { bg: string; text: string } {
   switch (level) {
+    case 'Bronze':
+      return { bg: 'bg-amber-100', text: 'text-amber-700' };
+    case 'Silver':
+      return { bg: 'bg-slate-100', text: 'text-slate-700' };
+    case 'Gold':
+      return { bg: 'bg-yellow-100', text: 'text-yellow-700' };
+    case 'Platinum':
+      return { bg: 'bg-cyan-100', text: 'text-cyan-700' };
     case 'Legendary':
       return { bg: 'bg-purple-100', text: 'text-purple-700' };
     case 'Excellent':

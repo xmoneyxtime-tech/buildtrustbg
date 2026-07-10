@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "@/app/lib/i18n";
 import { DashboardShell } from "@/app/components/ui";
 import { PremiumHero } from "@/app/components/ui/PremiumHero";
@@ -11,18 +12,57 @@ import { AIInsightsCard } from "@/app/components/ui/AIInsightsCard";
 import { GoldVerificationCard } from "@/app/components/ui/GoldVerificationCard";
 import { PremiumCard } from "@/app/components/ui/PremiumCard";
 import { QuickActionsCard } from "@/app/components/ui/QuickActionsCard";
+import type { TrustScoreResult } from "@/app/lib/trust-score";
+import { TrustBreakdown, TrustScoreCard } from "@/components/trust-score";
+
+type TrustScoreApiResponse = {
+  companyId: string;
+  companyName: string;
+  trust: TrustScoreResult;
+};
 
 export default function CompanyDashboardPage() {
   const { t } = useTranslation();
 
-  // Demo data - in a real app, this would come from your API
-  const companyData = {
-    name: "Tech Solutions Ltd",
-    trustScore: 0,
-    profileCompletion: 0,
-    isVerified: false,
-    isPremium: false,
-  };
+  const [trustData, setTrustData] = useState<TrustScoreApiResponse | null>(null);
+  const [trustLoading, setTrustLoading] = useState(true);
+  const [trustError, setTrustError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadTrust = async () => {
+      try {
+        setTrustLoading(true);
+        const response = await fetch("/api/company/trust-score", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load trust score");
+        }
+
+        const data = (await response.json()) as TrustScoreApiResponse;
+        setTrustData(data);
+      } catch {
+        setTrustError("Trust score is not available yet.");
+      } finally {
+        setTrustLoading(false);
+      }
+    };
+
+    void loadTrust();
+  }, []);
+
+  const companyData = useMemo(
+    () => ({
+      name: trustData?.companyName ?? "Company",
+      trustScore: trustData?.trust.score ?? 0,
+      profileCompletion: trustData?.trust.profileCompleteness ?? 0,
+      isVerified: (trustData?.trust.verifiedBadges.length ?? 0) > 0,
+      isPremium: false,
+    }),
+    [trustData]
+  );
 
   const nextSteps = [
     {
@@ -125,6 +165,22 @@ export default function CompanyDashboardPage() {
 
         {/* Quick Actions */}
         <QuickActionsCard />
+
+        {!trustLoading && trustData && (
+          <div className="grid gap-6 lg:grid-cols-2">
+            <TrustScoreCard result={trustData.trust} title="BuildTrust Score" />
+            <TrustBreakdown
+              breakdown={trustData.trust.breakdown}
+              suggestions={trustData.trust.suggestions}
+            />
+          </div>
+        )}
+
+        {!trustLoading && trustError && (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            {trustError}
+          </div>
+        )}
 
         {/* Profile Completion + AI Insights */}
         <div className="grid gap-6 lg:grid-cols-2">

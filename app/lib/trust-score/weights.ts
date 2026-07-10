@@ -1,90 +1,42 @@
-/**
- * Trust Score Engine - Configurable Weights
- * 
- * All weights are normalized to sum to 100.
- * Each weight represents the importance of that factor in the overall trust score.
- * 
- * Total: 100
- */
+import type { TrustFactorConfig, TrustLevelConfig } from "./types";
 
-import type { WeightConfig } from './types';
+export const TRUST_FACTOR_WEIGHTS: TrustFactorConfig[] = [
+  { key: "verifiedCompany", label: "Verified company", maxPoints: 8 },
+  { key: "identityVerified", label: "Identity verified", maxPoints: 6 },
+  { key: "profileCompleteness", label: "Profile completeness", maxPoints: 14 },
+  { key: "logoUploaded", label: "Logo uploaded", maxPoints: 3 },
+  { key: "coverUploaded", label: "Cover image uploaded", maxPoints: 3 },
+  { key: "website", label: "Website", maxPoints: 4 },
+  { key: "phone", label: "Phone", maxPoints: 4 },
+  { key: "description", label: "Description", maxPoints: 4 },
+  { key: "portfolio", label: "Portfolio", maxPoints: 6 },
+  { key: "projects", label: "Projects", maxPoints: 6 },
+  { key: "reviews", label: "Reviews", maxPoints: 8 },
+  { key: "averageRating", label: "Average rating", maxPoints: 8 },
+  { key: "yearsInBusiness", label: "Years in business", maxPoints: 6 },
+  { key: "certificates", label: "Certificates", maxPoints: 6 },
+  { key: "gallery", label: "Gallery", maxPoints: 6 },
+  { key: "responseTime", label: "Response time", maxPoints: 4 },
+  { key: "activeSubscription", label: "Active subscription", maxPoints: 4 },
+];
 
-/**
- * Default weight configuration for trust score calculation
- * 
- * Breakdown:
- * - Profile & Verification: 36 points
- * - Reviews & Ratings: 54 points  
- * - Engagement & History: 10 points
- */
-export const DEFAULT_WEIGHTS: WeightConfig = {
-  // Profile Completeness: How complete the company profile is (9%)
-  profileCompleteness: 9,
+export const TRUST_LEVELS: TrustLevelConfig[] = [
+  { level: "Bronze", minScore: 0, maxScore: 39 },
+  { level: "Silver", minScore: 40, maxScore: 69 },
+  { level: "Gold", minScore: 70, maxScore: 89 },
+  { level: "Platinum", minScore: 90, maxScore: 100 },
+];
 
-  // Verification: Company registration verification (14%)
-  verifiedCompany: 14,
-
-  // Verification: Domain ownership verification (9%)
-  verifiedDomain: 9,
-
-  // Reviews: Number of reviews (18%)
-  reviewCount: 18,
-
-  // Reviews: Average star rating (18%)
-  averageRating: 18,
-
-  // Reviews: Consistency of ratings (9%)
-  reviewConsistency: 9,
-
-  // History: How long company has been in business (4%)
-  companyAge: 4,
-
-  // Engagement: Percentage of inquiries responded to (5%)
-  responseRate: 5,
-
-  // Engagement: How quickly they respond (5%)
-  responseSpeed: 5,
-
-  // Freshness: Recency of last review (9%)
-  reviewFreshness: 9,
-};
-
-/**
- * Verify that weights sum to 100
- */
-export function validateWeights(weights: WeightConfig): boolean {
-  const total = Object.values(weights).reduce((sum, w) => sum + w, 0);
-  return Math.abs(total - 100) < 0.01; // Allow for floating point rounding
-}
-
-/**
- * Get total of all weights
- */
-export function getWeightsTotal(weights: WeightConfig): number {
-  return Object.values(weights).reduce((sum, w) => sum + w, 0);
-}
-
-/**
- * Normalize weights to sum to 100
- * Useful if weights drift due to floating point math
- */
-export function normalizeWeights(weights: WeightConfig): WeightConfig {
-  const total = getWeightsTotal(weights);
-  if (Math.abs(total - 100) < 0.01) {
-    return weights;
-  }
-
-  const factor = 100 / total;
-  return {
-    profileCompleteness: weights.profileCompleteness * factor,
-    verifiedCompany: weights.verifiedCompany * factor,
-    verifiedDomain: weights.verifiedDomain * factor,
-    reviewCount: weights.reviewCount * factor,
-    averageRating: weights.averageRating * factor,
-    reviewConsistency: weights.reviewConsistency * factor,
-    companyAge: weights.companyAge * factor,
-    responseRate: weights.responseRate * factor,
-    responseSpeed: weights.responseSpeed * factor,
-    reviewFreshness: weights.reviewFreshness * factor,
-  };
-}
+export const PROFILE_COMPLETENESS_FIELDS = [
+  "companyName",
+  "description",
+  "industry",
+  "website",
+  "phone",
+  "email",
+  "country",
+  "city",
+  "address",
+  "logoUrl",
+  "coverUrl",
+] as const;

@@ -63,6 +63,18 @@ export function TrustScoreCard({ result, title }: TrustScoreCardProps) {
   const { t, language } = useTranslation();
   const finalTitle = title || t("trustScoreDashboard.title");
   const locale = language === 'bg' ? 'bg-BG' : 'en-US';
+  const overallScore = result.overallScore ?? result.score;
+  const trustLevel = result.trustLevel ?? result.level;
+  const confidenceLevel = result.confidenceLevel ?? "Medium";
+  const categoryScores = result.categoryScores ?? {
+    Profile: 0,
+    Reviews: 0,
+    Verification: 0,
+    Engagement: 0,
+    Reputation: 0,
+  };
+  const factors = result.factors ?? {};
+  const calculatedAt = result.calculatedAt ?? new Date().toISOString();
 
   return (
     <div className="rounded-[24px] border border-gray-200 bg-white p-8 shadow-[0_4px_12px_-2px_rgba(15,76,129,0.1)]">
@@ -75,18 +87,18 @@ export function TrustScoreCard({ result, title }: TrustScoreCardProps) {
       <div className="mb-8 grid gap-8 lg:grid-cols-2">
         {/* Left: Score + Level */}
         <div className="flex flex-col items-start justify-center space-y-6">
-          <TrustScore score={result.overallScore} size="lg" />
+          <TrustScore score={overallScore} size="lg" />
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-gray-600">{t("trustScoreDashboard.status")}:</span>
-              <TrustBadge level={result.trustLevel} size="md" />
+              <TrustBadge level={trustLevel} size="md" />
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-gray-600">{t("trustScoreDashboard.confidence")}:</span>
-              <ConfidenceBadge level={result.confidenceLevel} size="md" />
+              <ConfidenceBadge level={confidenceLevel} size="md" />
             </div>
             <div className="text-xs text-gray-500">
-              {t("trustScoreDashboard.updated")}: {formatTimestamp(result.calculatedAt, locale)}
+              {t("trustScoreDashboard.updated")}: {formatTimestamp(calculatedAt, locale)}
             </div>
           </div>
         </div>
@@ -94,14 +106,14 @@ export function TrustScoreCard({ result, title }: TrustScoreCardProps) {
         {/* Right: Category Breakdown */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-gray-700">{t("trustScoreDashboard.factorScores")}</h3>
-          <CategoryScore scores={result.categoryScores} />
+          <CategoryScore scores={categoryScores} />
         </div>
       </div>
 
       {/* Footer: Detailed Factors (optional) */}
       <div className="border-t border-gray-200 pt-6">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {Object.entries(result.factors).map(([key, value]) => {
+          {Object.entries(factors).map(([key, value]) => {
             const labelKey = factorLabelKeys[key];
             const label = labelKey ? t(labelKey) : key;
 

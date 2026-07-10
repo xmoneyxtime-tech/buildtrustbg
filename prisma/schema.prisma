@@ -56,13 +56,31 @@ model VerificationToken {
 
 model CompanyApplication {
   id          String            @id @default(cuid())
+  slug        String?           @unique
   companyName String
   email       String
   phone       String
+  industry    String?
+  country     String?
   city        String
+  address     String?
   service     String
   website     String?
   description String
+  logoUrl     String?
+  coverUrl    String?
+  isVerified        Boolean @default(false)
+  identityVerified  Boolean @default(false)
+  phoneVerified     Boolean @default(false)
+  portfolioCount    Int     @default(0)
+  projectsCount     Int     @default(0)
+  reviewsCount      Int     @default(0)
+  averageRating     Float   @default(0)
+  yearsInBusiness   Int?
+  certificatesCount Int     @default(0)
+  galleryCount      Int     @default(0)
+  responseTimeHours Int?
+  activeSubscription Boolean @default(false)
   status      ApplicationStatus @default(PENDING)
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
