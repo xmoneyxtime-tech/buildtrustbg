@@ -18,6 +18,12 @@ model User {
   role          UserRole  @default(USER)
   accounts      Account[]
   sessions      Session[]
+  reviews       Review[]
+  reviewReplies ReviewReply[]
+  reviewReports ReviewReport[]          @relation("ReviewReportsByUser")
+  resolvedReviewReports ReviewReport[]  @relation("ReviewReportsResolvedBy")
+  reviewReactions ReviewReaction[]
+  reviewModerationLogs ReviewModerationLog[] @relation("ReviewModerationByAdmin")
 }
 
 model Account {
@@ -83,6 +89,9 @@ model CompanyApplication {
   activeSubscription Boolean @default(false)
   status      ApplicationStatus @default(PENDING)
   projects    Project[]
+  reviews     Review[]
+  reviewReplies ReviewReply[]
+  verifications Verification[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 }
@@ -101,6 +110,7 @@ model Project {
   published        Boolean         @default(false)
   status           ProjectStatus   @default(DRAFT)
   images           ProjectImage[]
+  reviews          Review[]
   company          CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
@@ -120,12 +130,147 @@ model ProjectImage {
   @@index([projectId])
 }
 
+model Verification {
+  id          String             @id @default(cuid())
+  companyId   String
+  type        VerificationType
+  status      VerificationStatus @default(PENDING)
+  reference   String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  company     CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  reviews     Review[]
+
+  @@index([companyId, status])
+}
+
+model Review {
+  id              String                 @id @default(cuid())
+  companyId       String
+  projectId       String
+  userId          String
+  verificationId  String?
+  rating          Int
+  title           String
+  description     String
+  status          ReviewStatus           @default(PENDING)
+  verified        Boolean                @default(false)
+  isSpam          Boolean                @default(false)
+  spamScore       Int                    @default(0)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  approvedAt      DateTime?
+  company         CompanyApplication     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  project         Project                @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verification    Verification?          @relation(fields: [verificationId], references: [id], onDelete: SetNull)
+  reply           ReviewReply?
+  reports         ReviewReport[]
+  reactions       ReviewReaction[]
+  attachments     ReviewAttachment[]
+  moderationLogs  ReviewModerationLog[]
+
+  @@unique([userId, projectId])
+  @@index([companyId, status, createdAt])
+  @@index([projectId, status])
+}
+
+model ReviewReply {
+  id          String             @id @default(cuid())
+  reviewId    String             @unique
+  companyId   String
+  userId      String
+  content     String
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  review      Review             @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  company     CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, createdAt])
+}
+
+model ReviewReport {
+  id            String             @id @default(cuid())
+  reviewId       String
+  reporterId     String
+  resolvedById   String?
+  reason         ReviewReportReason
+  details        String?
+  status         ReviewReportStatus @default(OPEN)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  resolvedAt     DateTime?
+  review         Review             @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reporter       User               @relation("ReviewReportsByUser", fields: [reporterId], references: [id], onDelete: Cascade)
+  resolvedBy     User?              @relation("ReviewReportsResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
+
+  @@unique([reviewId, reporterId])
+  @@index([status, createdAt])
+}
+
+model ReviewReaction {
+  id          String            @id @default(cuid())
+  reviewId    String
+  userId      String
+  type        ReviewReactionType
+  createdAt   DateTime          @default(now())
+  review      Review            @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@index([reviewId, type])
+}
+
+model ReviewAttachment {
+  id          String   @id @default(cuid())
+  reviewId    String
+  fileUrl     String
+  mimeType    String?
+  fileSize    Int?
+  altText     String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  review      Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@index([reviewId, order])
+}
+
+model ReviewModerationLog {
+  id          String                 @id @default(cuid())
+  reviewId     String
+  adminId      String
+  action       ReviewModerationAction
+  reason       String?
+  fromStatus   ReviewStatus?
+  toStatus     ReviewStatus
+  createdAt    DateTime               @default(now())
+  review       Review                 @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  admin        User                   @relation("ReviewModerationByAdmin", fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([reviewId, createdAt])
+  @@index([adminId, createdAt])
+}
+
 enum UserRole {
   USER
   ADMIN
 }
 
 enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum VerificationType {
+  COMPANY
+  IDENTITY
+  PHONE
+  DOCUMENT
+}
+
+enum VerificationStatus {
   PENDING
   APPROVED
   REJECTED
@@ -144,4 +289,41 @@ enum ProjectStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+  DELETED
+}
+
+enum ReviewReportReason {
+  SPAM
+  ABUSE
+  OFF_TOPIC
+  FAKE
+  CONFLICT_OF_INTEREST
+  OTHER
+}
+
+enum ReviewReportStatus {
+  OPEN
+  RESOLVED
+  REJECTED
+}
+
+enum ReviewReactionType {
+  HELPFUL
+  NOT_HELPFUL
+}
+
+enum ReviewModerationAction {
+  APPROVE
+  HIDE
+  DELETE
+  RESTORE
+  FLAG
+  REPORT_RESOLVED
+  REPORT_REJECTED
 }

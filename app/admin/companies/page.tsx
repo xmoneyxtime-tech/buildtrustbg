@@ -1,5 +1,6 @@
 import { DashboardShell } from "@/app/components/ui";
 import { AdminNotice } from "@/app/components/ui/AdminNotice";
+import { calculateCompanyReviewStats } from "@/app/lib/reviews";
 import { calculateTrustScore } from "@/app/lib/trust-score";
 import { prisma } from "@/lib/prisma";
 import { TrustBreakdown, TrustScoreBadge } from "@/components/trust-score";
@@ -25,16 +26,7 @@ export default async function AdminCompaniesPage() {
       identityVerified: true,
       phoneVerified: true,
       portfolioCount: true,
-      projects: {
-        where: {
-          status: {
-            not: "ARCHIVED",
-          },
-        },
-        select: {
-          id: true,
-        },
-      },
+      projectsCount: true,
       reviewsCount: true,
       averageRating: true,
       yearsInBusiness: true,
@@ -56,10 +48,13 @@ export default async function AdminCompaniesPage() {
           </div>
         )}
 
-        {companies.map((company) => {
+        {await Promise.all(companies.map(async (company) => {
+          const reviewStats = await calculateCompanyReviewStats(company.id);
           const trust = calculateTrustScore({
             ...company,
-            projectsCount: company.projects.length,
+            projectsCount: company.projectsCount,
+            reviewsCount: reviewStats.reviewCount,
+            averageRating: reviewStats.averageRating,
           });
 
           return (
@@ -85,7 +80,7 @@ export default async function AdminCompaniesPage() {
               </div>
             </section>
           );
-        })}
+        }))}
       </div>
     </DashboardShell>
   );

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { calculateTrustScore } from "@/app/lib/trust-score";
 import { listPublicProjectsByCompany } from "@/app/lib/projects";
+import { listPublicCompanyReviews, validateReviewQuery } from "@/app/lib/reviews";
 import {
   CompanyAbout,
   CompanyGallery,
@@ -18,6 +19,12 @@ import { TrustProgressBar, TrustScoreBadge } from "@/components/trust-score";
 
 type CompanyProfilePageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{
+    page?: string;
+    pageSize?: string;
+    stars?: string;
+    sort?: "latest" | "highest" | "lowest";
+  }>;
 };
 
 function slugify(value: string): string {
@@ -42,7 +49,11 @@ function toCompanyPublicProfile(company: {
   status: "PENDING" | "APPROVED" | "REJECTED";
   createdAt: Date;
   updatedAt: Date;
-}, projects: CompanyPublicProfile["projects"]): CompanyPublicProfile {
+}, projects: CompanyPublicProfile["projects"], reviewsData: {
+  reviews: CompanyPublicProfile["reviews"];
+  stats: CompanyPublicProfile["reviewSummary"];
+  pagination: CompanyPublicProfile["reviewPagination"];
+}): CompanyPublicProfile {
   const services = company.service
     .split(",")
     .map((service) => service.trim())
@@ -63,12 +74,15 @@ function toCompanyPublicProfile(company: {
     updatedAt: company.updatedAt,
     galleryItems: [],
     projects,
-    reviews: [],
+    reviews: reviewsData.reviews,
+    reviewSummary: reviewsData.stats,
+    reviewPagination: reviewsData.pagination,
   };
 }
 
-export default async function CompanyProfilePage({ params }: CompanyProfilePageProps) {
+export default async function CompanyProfilePage({ params, searchParams }: CompanyProfilePageProps) {
   const { slug } = await params;
+  const queryParams = await searchParams;
 
   const companies = await prisma.companyApplication.findMany({
     where: {
@@ -122,7 +136,17 @@ export default async function CompanyProfilePage({ params }: CompanyProfilePageP
     notFound();
   }
 
-  const publicProjects = await listPublicProjectsByCompany(company.id);
+  const reviewQuery = validateReviewQuery({
+    page: queryParams.page ? Number(queryParams.page) : 1,
+    pageSize: queryParams.pageSize ? Number(queryParams.pageSize) : 10,
+    stars: queryParams.stars ? Number(queryParams.stars) : undefined,
+    sort: queryParams.sort,
+  });
+
+  const [publicProjects, publicReviews] = await Promise.all([
+    listPublicProjectsByCompany(company.id),
+    listPublicCompanyReviews(company.id, reviewQuery),
+  ]);
 
   const trust = calculateTrustScore({
     id: company.id,
@@ -142,8 +166,8 @@ export default async function CompanyProfilePage({ params }: CompanyProfilePageP
     phoneVerified: company.phoneVerified,
     portfolioCount: company.portfolioCount,
     projectsCount: company.projects.length,
-    reviewsCount: company.reviewsCount,
-    averageRating: company.averageRating,
+    reviewsCount: publicReviews.stats.reviewCount,
+    averageRating: publicReviews.stats.averageRating,
     yearsInBusiness: company.yearsInBusiness,
     certificatesCount: company.certificatesCount,
     galleryCount: company.galleryCount,
@@ -165,6 +189,40 @@ export default async function CompanyProfilePage({ params }: CompanyProfilePageP
       featured: project.featured,
       images: project.images,
     }))
+    ,
+    {
+      reviews: publicReviews.reviews.map((review) => ({
+        id: review.id,
+        projectTitle: review.projectTitle,
+        rating: review.rating,
+        title: review.title,
+        description: review.description,
+        createdAt: review.createdAt,
+        verified: review.verified,
+        reviewerName: review.reviewerName,
+        reply: review.reply
+          ? {
+              content: review.reply.content,
+              createdAt: review.reply.createdAt,
+              companyName: review.reply.companyName,
+            }
+          : null,
+      })),
+      stats: {
+        averageRating: publicReviews.stats.averageRating,
+        reviewCount: publicReviews.stats.reviewCount,
+        verifiedReviews: publicReviews.stats.verifiedReviews,
+        positivePercent: publicReviews.stats.positivePercent,
+        negativePercent: publicReviews.stats.negativePercent,
+      },
+      pagination: {
+        page: publicReviews.page,
+        pageSize: publicReviews.pageSize,
+        totalPages: publicReviews.totalPages,
+        stars: publicReviews.stars,
+        sort: publicReviews.sort,
+      },
+    }
   );
 
   return (

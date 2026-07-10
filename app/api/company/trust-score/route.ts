@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { calculateTrustScore } from "@/app/lib/trust-score";
+import { calculateCompanyReviewStats } from "@/app/lib/reviews";
 
 export async function GET() {
   const session = await auth();
@@ -41,8 +42,6 @@ export async function GET() {
           id: true,
         },
       },
-      reviewsCount: true,
-      averageRating: true,
       yearsInBusiness: true,
       certificatesCount: true,
       galleryCount: true,
@@ -55,9 +54,13 @@ export async function GET() {
     return NextResponse.json({ error: "Company not found" }, { status: 404 });
   }
 
+  const reviewStats = await calculateCompanyReviewStats(company.id);
+
   const trust = calculateTrustScore({
     ...company,
     projectsCount: company.projects.length,
+    reviewsCount: reviewStats.reviewCount,
+    averageRating: reviewStats.averageRating,
   });
 
   return NextResponse.json({

@@ -16,6 +16,38 @@ export type CompanyPublicProject = {
   }>;
 };
 
+export type CompanyPublicReview = {
+  id: string;
+  projectTitle: string;
+  rating: number;
+  title: string;
+  description: string;
+  createdAt: string;
+  verified: boolean;
+  reviewerName: string;
+  reply: {
+    content: string;
+    createdAt: string;
+    companyName: string;
+  } | null;
+};
+
+export type CompanyReviewSummary = {
+  averageRating: number;
+  reviewCount: number;
+  verifiedReviews: number;
+  positivePercent: number;
+  negativePercent: number;
+};
+
+export type CompanyReviewPagination = {
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  stars: number | null;
+  sort: "latest" | "highest" | "lowest";
+};
+
 export type CompanyPublicProfile = {
   id: string;
   slug: string;
@@ -31,5 +63,7 @@ export type CompanyPublicProfile = {
   updatedAt: Date;
   galleryItems: string[];
   projects: CompanyPublicProject[];
-  reviews: string[];
+  reviews: CompanyPublicReview[];
+  reviewSummary: CompanyReviewSummary;
+  reviewPagination: CompanyReviewPagination;
 };

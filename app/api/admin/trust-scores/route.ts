@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { calculateTrustScore } from "@/app/lib/trust-score";
+import { calculateCompanyReviewStats } from "@/app/lib/reviews";
 
 export async function GET() {
   const session = await auth();
@@ -39,8 +40,6 @@ export async function GET() {
           id: true,
         },
       },
-      reviewsCount: true,
-      averageRating: true,
       yearsInBusiness: true,
       certificatesCount: true,
       galleryCount: true,
@@ -50,15 +49,23 @@ export async function GET() {
     },
   });
 
-  const result = companies.map((company) => ({
-    id: company.id,
-    name: company.companyName,
-    status: company.status,
-    trust: calculateTrustScore({
-      ...company,
-      projectsCount: company.projects.length,
-    }),
-  }));
+  const result = await Promise.all(
+    companies.map(async (company) => {
+      const reviewStats = await calculateCompanyReviewStats(company.id);
+
+      return {
+        id: company.id,
+        name: company.companyName,
+        status: company.status,
+        trust: calculateTrustScore({
+          ...company,
+          projectsCount: company.projects.length,
+          reviewsCount: reviewStats.reviewCount,
+          averageRating: reviewStats.averageRating,
+        }),
+      };
+    })
+  );
 
   return NextResponse.json({ companies: result });
 }
