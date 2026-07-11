@@ -5,6 +5,8 @@ import { calculateTrustScore } from "@/app/lib/trust-score";
 import { prisma } from "@/lib/prisma";
 import { TrustBreakdown, TrustScoreBadge } from "@/components/trust-score";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminCompaniesPage() {
   const companies = await prisma.companyApplication.findMany({
     orderBy: { createdAt: "desc" },
