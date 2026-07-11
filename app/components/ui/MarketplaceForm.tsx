@@ -1,8 +1,17 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "@/app/lib/i18n";
 import { CompanyRegistrationForm } from "@/app/lib/marketplace/types";
+import { normalizeLocale } from "@/app/lib/categories/shared";
+
+type PublicCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+  parentId: string | null;
+};
 
 const defaultForm: CompanyRegistrationForm = {
   companyName: "",
@@ -10,6 +19,7 @@ const defaultForm: CompanyRegistrationForm = {
   phone: "",
   city: "",
   service: "",
+  categoryIds: [],
   description: "",
   website: "",
 };
@@ -20,12 +30,56 @@ type MarketplaceFormProps = {
 };
 
 export function MarketplaceForm({ onSubmit, submitLabel }: MarketplaceFormProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [form, setForm] = useState<CompanyRegistrationForm>(defaultForm);
+  const [categories, setCategories] = useState<PublicCategory[]>([]);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        setCategoriesError(null);
+
+        const locale = normalizeLocale(language);
+        const response = await fetch(`/api/categories?locale=${encodeURIComponent(locale)}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          const body = (await response.json()) as { error?: string };
+          throw new Error(body.error || "Unable to load categories");
+        }
+
+        const data = (await response.json()) as { categories: PublicCategory[] };
+        setCategories(data.categories);
+      } catch (error) {
+        setCategoriesError(error instanceof Error ? error.message : "Unable to load categories");
+      }
+    }
+
+    void loadCategories();
+  }, [language]);
+
+  const categoryById = useMemo(() => {
+    const map = new Map<string, PublicCategory>();
+    for (const category of categories) {
+      map.set(category.id, category);
+    }
+    return map;
+  }, [categories]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(form);
+    const selectedNames = form.categoryIds
+      .map((id) => categoryById.get(id)?.name)
+      .filter((name): name is string => Boolean(name));
+    const payload: CompanyRegistrationForm = {
+      ...form,
+      service: selectedNames.join(", "),
+    };
+
+    onSubmit(payload);
   };
 
   return (
@@ -74,13 +128,34 @@ export function MarketplaceForm({ onSubmit, submitLabel }: MarketplaceFormProps)
         </label>
         <label className="block text-sm text-slate-700">
           <span className="mb-2 block font-medium">{t("formLabels.service")}</span>
-          <input
+          <select
             required
-            value={form.service}
-            onChange={(event) => setForm({ ...form, service: event.target.value })}
+            multiple
+            value={form.categoryIds}
+            onChange={(event) => {
+              const selected = Array.from(event.target.selectedOptions).map((option) => option.value);
+              const selectedNames = selected
+                .map((id) => categoryById.get(id)?.name)
+                .filter((name): name is string => Boolean(name));
+
+              setForm({
+                ...form,
+                categoryIds: selected,
+                service: selectedNames.join(", "),
+              });
+            }}
             className="w-full rounded-2xl border border-slate-200 bg-[#F8FAFC] px-4 py-3 outline-none transition focus:border-[#0F4C81]"
-            placeholder={t("auth.servicePlaceholder")}
-          />
+          >
+            {categories
+              .filter((category) => !category.parentId)
+              .map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.icon} {category.name}
+                </option>
+              ))}
+          </select>
+          {categoriesError && <p className="mt-1 text-xs text-red-600">{categoriesError}</p>}
+          <p className="mt-1 text-xs text-slate-500">Задръж Ctrl/Cmd за избор на повече категории.</p>
         </label>
         <label className="block text-sm text-slate-700">
           <span className="mb-2 block font-medium">{t("formLabels.website")}</span>

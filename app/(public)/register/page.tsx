@@ -9,10 +9,33 @@ import { CompanyRegistrationForm } from "@/app/lib/marketplace/types";
 export default function RegisterPage() {
   const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (form: CompanyRegistrationForm) => {
-    console.info("Company registration submitted", form);
-    setSubmitted(true);
+  const handleSubmit = async (form: CompanyRegistrationForm) => {
+    try {
+      setSubmitting(true);
+      setSubmitError(null);
+
+      const response = await fetch("/api/company/application", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) {
+        const body = (await response.json()) as { message?: string };
+        throw new Error(body.message || "Application submission failed");
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Application submission failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -30,7 +53,18 @@ export default function RegisterPage() {
               </div>
             ) : null}
 
-            <MarketplaceForm onSubmit={handleSubmit} submitLabel={t("auth.submitApplication")} />
+            {submitError ? (
+              <div className="rounded-[20px] border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                {submitError}
+              </div>
+            ) : null}
+
+            <MarketplaceForm
+              onSubmit={(form) => {
+                void handleSubmit(form);
+              }}
+              submitLabel={submitting ? "Submitting..." : t("auth.submitApplication")}
+            />
 
             <div className="flex flex-wrap gap-3 pt-2">
               <Link href="/company/dashboard" className="rounded-full bg-[#0F4C81] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0B3D67]">

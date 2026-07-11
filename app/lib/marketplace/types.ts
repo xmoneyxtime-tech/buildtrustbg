@@ -4,6 +4,7 @@ export type CompanyRegistrationForm = {
   phone: string;
   city: string;
   service: string;
+  categoryIds: string[];
   description: string;
   website?: string;
 };

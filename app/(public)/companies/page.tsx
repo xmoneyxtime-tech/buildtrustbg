@@ -1,14 +1,66 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { AppShell, Panel } from "@/app/components/ui";
-import { getLocalizedCategories, getLocalizedCities } from "@/app/lib/localized-data";
+import { getLocalizedCities } from "@/app/lib/localized-data";
 import { useTranslation } from "@/app/lib/i18n";
+import { normalizeLocale } from "@/app/lib/categories/shared";
+
+type PublicCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+  description: string;
+  parentId: string | null;
+  translations?: Array<{
+    locale: string;
+    name: string;
+  }>;
+};
 
 export default function CompaniesPage() {
   const { t, language } = useTranslation();
-  const categories = getLocalizedCategories(language);
+  const [categories, setCategories] = useState<PublicCategory[]>([]);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
   const cities = getLocalizedCities(language);
+
+  const getLocalizedCategoryName = (category: PublicCategory) => {
+    if (language !== "en") {
+      return category.name;
+    }
+
+    const english = category.translations?.find((item) => item.locale === "en")?.name;
+    return english || category.name;
+  };
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        setCategoriesError(null);
+
+        const locale = normalizeLocale(language);
+
+        const response = await fetch(`/api/categories?locale=${encodeURIComponent(locale)}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          const body = (await response.json()) as { error?: string };
+          throw new Error(body.error || "Failed to load categories");
+        }
+
+        const data = (await response.json()) as { categories: PublicCategory[] };
+        setCategories(data.categories);
+      } catch (error) {
+        setCategoriesError(error instanceof Error ? error.message : "Failed to load categories");
+      }
+    }
+
+    void loadCategories();
+  }, [language]);
 
   return (
     <AppShell>
@@ -24,13 +76,17 @@ export default function CompaniesPage() {
 
           <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <Panel title={t("companiesPage.categoriesTitle")} description={t("companiesPage.categoriesDescription")}>
-              <div className="flex flex-wrap gap-3">
-                {categories.map((category) => (
-                  <span key={category} className="rounded-full border border-slate-200 bg-[#F8FAFC] px-3 py-2 text-sm font-medium text-slate-700">
-                    {category}
-                  </span>
-                ))}
-              </div>
+              {categoriesError ? (
+                <p className="text-sm text-red-600">{categoriesError}</p>
+              ) : (
+                <div className="flex flex-wrap gap-3">
+                  {categories.map((category) => (
+                    <span key={category.id} className="rounded-full border border-slate-200 bg-[#F8FAFC] px-3 py-2 text-sm font-medium text-slate-700">
+                      {getLocalizedCategoryName(category)}
+                    </span>
+                  ))}
+                </div>
+              )}
             </Panel>
             <Panel title={t("companiesPage.citiesTitle")} description={t("companiesPage.citiesDescription")}>
               <div className="flex flex-wrap gap-3">
