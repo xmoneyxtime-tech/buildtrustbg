@@ -1,11 +1,22 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import {
   DEFAULT_CATEGORY_LOCALE,
   FALLBACK_CATEGORY_LOCALE,
   normalizeLocale,
 } from "./shared";
 
-type RawCategory = Awaited<ReturnType<typeof prisma.category.findMany>>[number];
+type RawCategory = Prisma.CategoryGetPayload<{
+  include: {
+    parent: {
+      select: {
+        id: true;
+        slug: true;
+      };
+    };
+    translations: true;
+  };
+}>;
 
 type CategoryTranslation = {
   locale: string;
