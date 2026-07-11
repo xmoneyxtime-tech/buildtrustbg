@@ -1,17 +1,58 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Button, FeatureCard, SectionTitle } from "../ui";
-import { getLocalizedServices, getLocalizedCities, getLocalizedFeaturedCategories } from "@/app/lib/localized-data";
+import { getLocalizedCities, getLocalizedFeaturedCategories } from "@/app/lib/localized-data";
 import { useTranslation } from "@/app/lib/i18n";
+import { normalizeLocale } from "@/app/lib/categories/shared";
 
-export function HomeContent() {
+type HomeCategoryOption = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+type HomeCompany = {
+  id: string;
+  slug: string;
+  companyName: string;
+  city: string;
+  description: string;
+  isVerified: boolean;
+};
+
+export function HomeContent({ companies }: { companies: HomeCompany[] }) {
   const { t, language } = useTranslation();
+  const [serviceOptions, setServiceOptions] = useState<Array<{ value: string; label: string }>>([]);
   
-  // Get localized data based on current language
-  const serviceOptions = getLocalizedServices(language);
   const cities = getLocalizedCities(language);
   const featuredCategories = getLocalizedFeaturedCategories(language);
+
+  useEffect(() => {
+    async function loadCategoryOptions() {
+      const locale = normalizeLocale(language);
+      const response = await fetch(`/api/categories?locale=${encodeURIComponent(locale)}`, {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        setServiceOptions([]);
+        return;
+      }
+
+      const data = (await response.json()) as { categories: HomeCategoryOption[] };
+      setServiceOptions(
+        data.categories.map((category) => ({
+          value: category.slug,
+          label: category.name,
+        }))
+      );
+    }
+
+    void loadCategoryOptions();
+  }, [language]);
 
   const trustFeatures = [
     {
@@ -249,19 +290,45 @@ export function HomeContent() {
             <p className="mt-5 text-base leading-8 text-slate-700 sm:text-lg">
               {t("homeExtended.companiesSectionDescription")}
             </p>
+          </div>
 
-            <div className="mt-8 rounded-[28px] border border-[#F58220]/20 bg-white p-8 shadow-[0_24px_80px_-36px_rgba(15,76,129,0.24)] sm:p-10">
+          {companies.length > 0 ? (
+            <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {companies.map((company) => (
+                <article
+                  key={company.id}
+                  className="rounded-[24px] border border-slate-200/80 bg-white p-6 text-left shadow-[0_18px_60px_-32px_rgba(15,76,129,0.2)]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-lg font-semibold text-slate-900">{company.companyName}</h3>
+                    {company.isVerified ? (
+                      <span className="rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700">
+                        Verified
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-[#0F4C81]">{company.city}</p>
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">{company.description}</p>
+                  <Link
+                    href={`/companies/${company.slug}`}
+                    className="mt-5 inline-flex text-sm font-semibold text-[#0F4C81] transition hover:text-[#0B3D67]"
+                  >
+                    {t("buttons.viewMore")} →
+                  </Link>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="mx-auto mt-8 max-w-3xl rounded-[28px] border border-[#F58220]/20 bg-white p-8 text-center shadow-[0_24px_80px_-36px_rgba(15,76,129,0.24)] sm:p-10">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FFF7EE] text-3xl shadow-sm">
                 🛡️
               </div>
-              <p className="mt-6 text-xl font-semibold text-slate-900">
-                {t("homeExtended.comingSoon")}
-              </p>
+              <p className="mt-6 text-xl font-semibold text-slate-900">{t("homeExtended.comingSoon")}</p>
               <Link href="/register" className="mt-8 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#F58220] px-6 text-sm font-semibold text-white transition hover:bg-[#E36F00]">
                 {t("homeExtended.registerCompanyButton")}
               </Link>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
