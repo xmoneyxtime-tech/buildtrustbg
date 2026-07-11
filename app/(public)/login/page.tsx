@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { AppShell, Panel } from "@/app/components/ui";
 import { useTranslation } from "@/app/lib/i18n";
 
@@ -9,10 +10,34 @@ export default function LoginPage() {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.info("Marketplace login submitted", { email, password });
+
+    try {
+      setIsSubmitting(true);
+      setAuthError(null);
+
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/login",
+      });
+
+      if (!result || result.error) {
+        setAuthError("Invalid email or password.");
+        return;
+      }
+
+      window.location.assign(result.url || "/login");
+    } catch {
+      setAuthError("Authentication failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -42,8 +67,9 @@ export default function LoginPage() {
                 placeholder={t("auth.passwordPlaceholder")}
               />
             </label>
-            <button type="submit" className="inline-flex h-12 items-center justify-center rounded-[12px] bg-[#0F4C81] px-6 text-sm font-semibold text-white transition hover:bg-[#0B3D67]">
-              {t("auth.loginButton")}
+            {authError && <p className="text-sm text-red-600">{authError}</p>}
+            <button type="submit" disabled={isSubmitting} className="inline-flex h-12 items-center justify-center rounded-[12px] bg-[#0F4C81] px-6 text-sm font-semibold text-white transition hover:bg-[#0B3D67] disabled:cursor-not-allowed disabled:opacity-70">
+              {isSubmitting ? "Signing in..." : t("auth.loginButton")}
             </button>
           </form>
 
