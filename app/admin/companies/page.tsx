@@ -48,7 +48,7 @@ export default async function AdminCompaniesPage() {
           </div>
         )}
 
-        {await Promise.all(companies.map(async (company) => {
+        {await Promise.all(companies.map(async (company: (typeof companies)[number]) => {
           const reviewStats = await calculateCompanyReviewStats(company.id);
           const trust = calculateTrustScore({
             ...company,
