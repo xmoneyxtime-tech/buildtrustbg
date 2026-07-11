@@ -130,7 +130,7 @@ export default async function CompanyProfilePage({ params, searchParams }: Compa
     },
   });
 
-  const company = companies.find((item) => slugify(item.companyName) === slug);
+  const company = companies.find((item: (typeof companies)[number]) => slugify(item.companyName) === slug);
 
   if (!company) {
     notFound();
