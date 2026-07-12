@@ -6,6 +6,7 @@
  */
 
 import { CompanyProfileUpdateInput, ProfileValidationError } from "./types";
+import { sanitizePlainText } from "@/app/lib/validation/core";
 
 interface ValidationRule {
   minLength?: number;
@@ -149,8 +150,8 @@ export function sanitizeProfileInput(
     if (typeof value === "string") {
       // Remove HTML tags and trim
       sanitized[key as keyof CompanyProfileUpdateInput] = value
-        .replace(/<[^>]*>/g, "")
-        .trim();
+        ? sanitizePlainText(value)
+        : value;
     } else {
       sanitized[key as keyof CompanyProfileUpdateInput] = value;
     }

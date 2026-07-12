@@ -1,7 +1,6 @@
 export {
   createCompanyProject,
   deleteCompanyProject,
-  findCompanyByUserEmail,
   getPublicProjectBySlug,
   listCompanyProjects,
   listPublicProjectsByCompany,

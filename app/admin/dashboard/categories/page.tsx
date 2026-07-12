@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { DashboardShell } from "@/app/components/ui";
 import { AdminTable } from "@/app/components/ui/AdminTable";
+import { sortByLocale } from "@/app/lib/sorting";
 
 type CategoryTranslation = {
   locale: string;
@@ -97,7 +98,11 @@ export default function CategoriesPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const parentOptions = useMemo(
-    () => categories.filter((category) => category.id !== editingCategoryId),
+    () => sortByLocale(
+      categories.filter((category) => category.id !== editingCategoryId),
+      "bg",
+      (category) => translationFor(category, "bg")?.name || category.slug
+    ),
     [categories, editingCategoryId]
   );
 
@@ -123,7 +128,7 @@ export default function CategoriesPage() {
       }
 
       const data = (await response.json()) as { categories: AdminCategory[] };
-      setCategories(data.categories);
+      setCategories(sortByLocale(data.categories, "bg", (category) => translationFor(category, "bg")?.name || category.slug));
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "Неуспешно зареждане на категории");
     } finally {
@@ -132,6 +137,7 @@ export default function CategoriesPage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadCategories();
   }, []);
 

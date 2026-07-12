@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { DashboardShell } from "@/app/components/ui";
 import { mockCities, mockCompanies } from "@/app/lib/mock-admin-data";
+import { sortByLocale } from "@/app/lib/sorting";
 
 export default function CitiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,10 +22,14 @@ export default function CitiesPage() {
     if (!searchQuery.trim()) return mockCities;
 
     const query = searchQuery.toLowerCase();
-    return mockCities.filter(
+    return sortByLocale(
+      mockCities.filter(
       (city) =>
         city.name.toLowerCase().includes(query) ||
         city.region.toLowerCase().includes(query)
+      ),
+      "bg",
+      (city) => city.name
     );
   }, [searchQuery]);
 

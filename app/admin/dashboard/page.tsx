@@ -6,6 +6,7 @@ import { AdminTable } from "@/app/components/ui/AdminTable";
 import { AdminBadge } from "@/app/components/ui/AdminBadge";
 import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockCompanies } from "@/app/lib/mock-admin-data";
+import { sortByLocale } from "@/app/lib/sorting";
 
 export default function AdminDashboardPage() {
   const totalCompanies = mockCompanies.length;
@@ -15,7 +16,11 @@ export default function AdminDashboardPage() {
   const premiumCompanies = mockCompanies.filter((c) => c.verification === "premium").length;
 
   const latestRegistrations = mockCompanies.slice(-3).reverse();
-  const pendingApprovals = mockCompanies.filter((c) => c.status === "pending");
+  const pendingApprovals = sortByLocale(
+    mockCompanies.filter((c) => c.status === "pending"),
+    "bg",
+    (company) => company.name
+  );
 
   return (
     <DashboardShell role="admin">
@@ -102,8 +107,11 @@ export default function AdminDashboardPage() {
           <div>
             <h2 className="mb-6 text-2xl font-semibold text-slate-900">Gold фирми</h2>
             <div className="space-y-3">
-              {mockCompanies
-                .filter((c) => c.verification === "gold")
+              {sortByLocale(
+                mockCompanies.filter((c) => c.verification === "gold"),
+                "bg",
+                (company) => company.name
+              )
                 .map((company) => (
                   <div
                     key={company.id}
@@ -126,8 +134,11 @@ export default function AdminDashboardPage() {
           <div>
             <h2 className="mb-6 text-2xl font-semibold text-slate-900">Premium фирми</h2>
             <div className="space-y-3">
-              {mockCompanies
-                .filter((c) => c.verification === "premium")
+              {sortByLocale(
+                mockCompanies.filter((c) => c.verification === "premium"),
+                "bg",
+                (company) => company.name
+              )
                 .map((company) => (
                   <div
                     key={company.id}

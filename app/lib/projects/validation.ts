@@ -1,5 +1,11 @@
 import type { ProjectCategory, ProjectStatus } from "@prisma/client";
 import type { CreateProjectInput, ProjectImageInput, UpdateProjectInput } from "./types";
+import {
+  isValidDateString,
+  isValidHttpUrl,
+  normalizeIssueMessages,
+  type ValidationIssue,
+} from "@/app/lib/validation/core";
 
 const VALID_CATEGORIES: ProjectCategory[] = [
   "GENERAL",
@@ -12,15 +18,6 @@ const VALID_CATEGORIES: ProjectCategory[] = [
 
 const VALID_STATUSES: ProjectStatus[] = ["DRAFT", "PUBLISHED", "ARCHIVED"];
 
-function isValidUrl(value: string): boolean {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
 function sanitizeImages(images: ProjectImageInput[]): ProjectImageInput[] {
   return images
     .map((image, index) => ({
@@ -32,10 +29,10 @@ function sanitizeImages(images: ProjectImageInput[]): ProjectImageInput[] {
 }
 
 export function validateCreateProjectInput(input: CreateProjectInput): string[] {
-  const errors: string[] = [];
+  const issues: ValidationIssue[] = [];
 
   if (!input.title || input.title.trim().length < 3 || input.title.trim().length > 120) {
-    errors.push("Title must be between 3 and 120 characters.");
+    issues.push({ field: "title", message: "Title must be between 3 and 120 characters." });
   }
 
   if (
@@ -43,90 +40,90 @@ export function validateCreateProjectInput(input: CreateProjectInput): string[] 
     input.shortDescription.trim().length < 10 ||
     input.shortDescription.trim().length > 240
   ) {
-    errors.push("Short description must be between 10 and 240 characters.");
+    issues.push({ field: "shortDescription", message: "Short description must be between 10 and 240 characters." });
   }
 
   if (!input.description || input.description.trim().length < 20 || input.description.trim().length > 4000) {
-    errors.push("Description must be between 20 and 4000 characters.");
+    issues.push({ field: "description", message: "Description must be between 20 and 4000 characters." });
   }
 
   if (!VALID_CATEGORIES.includes(input.category)) {
-    errors.push("Invalid project category.");
+    issues.push({ field: "category", message: "Invalid project category." });
   }
 
   if (!input.city || input.city.trim().length < 2 || input.city.trim().length > 80) {
-    errors.push("City must be between 2 and 80 characters.");
+    issues.push({ field: "city", message: "City must be between 2 and 80 characters." });
   }
 
-  if (input.completedAt && Number.isNaN(Date.parse(input.completedAt))) {
-    errors.push("Invalid completion date.");
+  if (input.completedAt && !isValidDateString(input.completedAt)) {
+    issues.push({ field: "completedAt", message: "Invalid completion date." });
   }
 
   const images = sanitizeImages(input.images);
   if (images.length > 20) {
-    errors.push("Maximum 20 images are allowed.");
+    issues.push({ field: "images", message: "Maximum 20 images are allowed." });
   }
 
   images.forEach((image) => {
-    if (!isValidUrl(image.imageUrl)) {
-      errors.push("Each project image must be a valid URL.");
+    if (!isValidHttpUrl(image.imageUrl)) {
+      issues.push({ field: "images", message: "Each project image must be a valid URL." });
     }
   });
 
-  return errors;
+  return normalizeIssueMessages(issues);
 }
 
 export function validateUpdateProjectInput(input: UpdateProjectInput): string[] {
-  const errors: string[] = [];
+  const issues: ValidationIssue[] = [];
 
   if (input.title !== undefined && (input.title.trim().length < 3 || input.title.trim().length > 120)) {
-    errors.push("Title must be between 3 and 120 characters.");
+    issues.push({ field: "title", message: "Title must be between 3 and 120 characters." });
   }
 
   if (
     input.shortDescription !== undefined &&
     (input.shortDescription.trim().length < 10 || input.shortDescription.trim().length > 240)
   ) {
-    errors.push("Short description must be between 10 and 240 characters.");
+    issues.push({ field: "shortDescription", message: "Short description must be between 10 and 240 characters." });
   }
 
   if (
     input.description !== undefined &&
     (input.description.trim().length < 20 || input.description.trim().length > 4000)
   ) {
-    errors.push("Description must be between 20 and 4000 characters.");
+    issues.push({ field: "description", message: "Description must be between 20 and 4000 characters." });
   }
 
   if (input.category !== undefined && !VALID_CATEGORIES.includes(input.category)) {
-    errors.push("Invalid project category.");
+    issues.push({ field: "category", message: "Invalid project category." });
   }
 
   if (input.city !== undefined && (input.city.trim().length < 2 || input.city.trim().length > 80)) {
-    errors.push("City must be between 2 and 80 characters.");
+    issues.push({ field: "city", message: "City must be between 2 and 80 characters." });
   }
 
-  if (input.completedAt && Number.isNaN(Date.parse(input.completedAt))) {
-    errors.push("Invalid completion date.");
+  if (input.completedAt && !isValidDateString(input.completedAt)) {
+    issues.push({ field: "completedAt", message: "Invalid completion date." });
   }
 
   if (input.status !== undefined && !VALID_STATUSES.includes(input.status)) {
-    errors.push("Invalid project status.");
+    issues.push({ field: "status", message: "Invalid project status." });
   }
 
   if (input.images !== undefined) {
     const images = sanitizeImages(input.images);
     if (images.length > 20) {
-      errors.push("Maximum 20 images are allowed.");
+      issues.push({ field: "images", message: "Maximum 20 images are allowed." });
     }
 
     images.forEach((image) => {
-      if (!isValidUrl(image.imageUrl)) {
-        errors.push("Each project image must be a valid URL.");
+      if (!isValidHttpUrl(image.imageUrl)) {
+        issues.push({ field: "images", message: "Each project image must be a valid URL." });
       }
     });
   }
 
-  return errors;
+  return normalizeIssueMessages(issues);
 }
 
 export function sanitizeCreateProjectInput(input: CreateProjectInput): CreateProjectInput {

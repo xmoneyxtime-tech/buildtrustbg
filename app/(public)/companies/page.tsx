@@ -6,6 +6,7 @@ import { AppShell, Panel } from "@/app/components/ui";
 import { getLocalizedCities } from "@/app/lib/localized-data";
 import { useTranslation } from "@/app/lib/i18n";
 import { normalizeLocale } from "@/app/lib/categories/shared";
+import { sortByLocale } from "@/app/lib/sorting";
 
 type PublicCategory = {
   id: string;
@@ -53,7 +54,7 @@ export default function CompaniesPage() {
         }
 
         const data = (await response.json()) as { categories: PublicCategory[] };
-        setCategories(data.categories);
+        setCategories(sortByLocale(data.categories, locale, (category) => category.name));
       } catch (error) {
         setCategoriesError(error instanceof Error ? error.message : "Failed to load categories");
       }

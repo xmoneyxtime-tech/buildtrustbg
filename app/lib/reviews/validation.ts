@@ -6,6 +6,13 @@ import type {
   SetReviewReactionInput,
   UpdateReviewReplyInput,
 } from "./types";
+import {
+  isValidHttpUrl,
+  normalizeIssueMessages,
+  sanitizePlainText,
+  validateIdentifier,
+  type ValidationIssue,
+} from "@/app/lib/validation/core";
 
 const REPORT_REASONS: ReviewReportReason[] = [
   "SPAM",
@@ -20,55 +27,44 @@ const REACTION_TYPES: ReviewReactionType[] = ["HELPFUL", "NOT_HELPFUL"];
 
 const ADMIN_STATUSES: ReviewStatus[] = ["APPROVED", "HIDDEN", "DELETED", "PENDING"];
 
-function isValidHttpUrl(value: string): boolean {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
 function sanitizeText(value: string): string {
-  return value.replace(/\s+/g, " ").trim();
+  return sanitizePlainText(value);
 }
 
 export function validateCreateReviewInput(input: CreateReviewInput): string[] {
-  const errors: string[] = [];
+  const issues: ValidationIssue[] = [];
 
-  if (!input.projectId || input.projectId.trim().length < 3) {
-    errors.push("Project is required.");
-  }
+  issues.push(...validateIdentifier(input.projectId, "projectId", "Project"));
 
   if (!Number.isInteger(input.rating) || input.rating < 1 || input.rating > 5) {
-    errors.push("Rating must be between 1 and 5.");
+    issues.push({ field: "rating", message: "Rating must be between 1 and 5." });
   }
 
   const title = sanitizeText(input.title || "");
   if (title.length < 3 || title.length > 120) {
-    errors.push("Title must be between 3 and 120 characters.");
+    issues.push({ field: "title", message: "Title must be between 3 and 120 characters." });
   }
 
   const description = sanitizeText(input.description || "");
   if (description.length < 20 || description.length > 4000) {
-    errors.push("Description must be between 20 and 4000 characters.");
+    issues.push({ field: "description", message: "Description must be between 20 and 4000 characters." });
   }
 
   if (input.attachments && input.attachments.length > 10) {
-    errors.push("Maximum 10 attachments are allowed.");
+    issues.push({ field: "attachments", message: "Maximum 10 attachments are allowed." });
   }
 
   for (const attachment of input.attachments ?? []) {
     if (!isValidHttpUrl(attachment.fileUrl)) {
-      errors.push("Each attachment URL must be a valid HTTP/HTTPS URL.");
+      issues.push({ field: "attachments", message: "Each attachment URL must be a valid HTTP/HTTPS URL." });
     }
 
     if (attachment.altText && attachment.altText.trim().length > 180) {
-      errors.push("Attachment alt text cannot exceed 180 characters.");
+      issues.push({ field: "attachments", message: "Attachment alt text cannot exceed 180 characters." });
     }
   }
 
-  return errors;
+  return normalizeIssueMessages(issues);
 }
 
 export function sanitizeCreateReviewInput(input: CreateReviewInput): CreateReviewInput {
@@ -88,14 +84,14 @@ export function sanitizeCreateReviewInput(input: CreateReviewInput): CreateRevie
 }
 
 export function validateReviewReplyInput(input: UpdateReviewReplyInput): string[] {
-  const errors: string[] = [];
+  const issues: ValidationIssue[] = [];
   const content = sanitizeText(input.content || "");
 
   if (content.length < 3 || content.length > 2000) {
-    errors.push("Reply must be between 3 and 2000 characters.");
+    issues.push({ field: "content", message: "Reply must be between 3 and 2000 characters." });
   }
 
-  return errors;
+  return normalizeIssueMessages(issues);
 }
 
 export function sanitizeReviewReplyInput(input: UpdateReviewReplyInput): UpdateReviewReplyInput {
@@ -121,17 +117,17 @@ export function validateReviewQuery(input: ReviewQuery): ReviewQuery {
 }
 
 export function validateReviewReportInput(input: CreateReviewReportInput): string[] {
-  const errors: string[] = [];
+  const issues: ValidationIssue[] = [];
 
   if (!REPORT_REASONS.includes(input.reason)) {
-    errors.push("Invalid report reason.");
+    issues.push({ field: "reason", message: "Invalid report reason." });
   }
 
   if (input.details && input.details.trim().length > 1500) {
-    errors.push("Report details cannot exceed 1500 characters.");
+    issues.push({ field: "details", message: "Report details cannot exceed 1500 characters." });
   }
 
-  return errors;
+  return normalizeIssueMessages(issues);
 }
 
 export function sanitizeReviewReportInput(input: CreateReviewReportInput): CreateReviewReportInput {

@@ -1,23 +1,34 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
 import { prisma } from "@/lib/prisma";
+import { enforceRateLimit } from "@/app/lib/security/rate-limit";
+import { validateRegisterInput } from "@/app/lib/validation/auth";
+import { invalidJsonResponse, validationErrorResponse } from "@/app/lib/validation/http";
 
 export async function POST(request: Request) {
+  const rateLimited = enforceRateLimit(request, "register");
+  if (rateLimited) {
+    return rateLimited;
+  }
+
   try {
-    const body = await request.json();
+    let body: unknown;
 
-    const { name, email, password } = body;
+    try {
+      body = await request.json();
+    } catch {
+      return invalidJsonResponse();
+    }
 
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { error: "All fields are required." },
-        { status: 400 }
-      );
+    const parsed = validateRegisterInput(body);
+
+    if (!parsed.success) {
+      return validationErrorResponse(parsed.issues);
     }
 
     const existingUser = await prisma.user.findUnique({
       where: {
-        email,
+        email: parsed.data.email,
       },
     });
 
@@ -28,12 +39,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const hashedPassword = await hash(password, 12);
+    const hashedPassword = await hash(parsed.data.password, 12);
 
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
+        name: parsed.data.name,
+        email: parsed.data.email,
         password: hashedPassword,
       },
     });

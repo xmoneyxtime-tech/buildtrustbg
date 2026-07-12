@@ -8,6 +8,7 @@
 import type { Language } from './i18n/types';
 import { bgTranslations } from './i18n/bg';
 import { enTranslations } from './i18n/en';
+import { sortByLocale, sortStringsByLocale } from './sorting';
 
 /**
  * Get translation object for the specified language
@@ -25,7 +26,7 @@ function getTranslationForLanguage(language: Language) {
  */
 export function getLocalizedCategories(language: Language): string[] {
   const translations = getTranslationForLanguage(language);
-  return Object.values(translations.categories);
+  return sortStringsByLocale(Object.values(translations.categories), language);
 }
 
 /**
@@ -37,7 +38,7 @@ export function getLocalizedCategories(language: Language): string[] {
  */
 export function getLocalizedCities(language: Language): string[] {
   const translations = getTranslationForLanguage(language);
-  return Object.values(translations.cities);
+  return sortStringsByLocale(Object.values(translations.cities), language);
 }
 
 /**
@@ -72,10 +73,14 @@ export function getLocalizedServices(language: Language): Array<{ value: string;
     excavation: 'excavation',
   };
 
-  return Object.entries(translations.categories).map(([key, label]) => ({
-    value: categoryMap[key] || key,
-    label,
-  }));
+  return sortByLocale(
+    Object.entries(translations.categories).map(([key, label]) => ({
+      value: categoryMap[key] || key,
+      label,
+    })),
+    language,
+    (item) => item.label
+  );
 }
 
 /**
@@ -185,10 +190,14 @@ export function getLocalizedFeaturedCategories(language: Language) {
     excavation: 'from-[#92400E]/10 to-[#B45309]/10',
   } as Record<string, string>;
 
-  return Object.entries(categoryMap).map(([key, title]) => ({
-    title,
-    description: descriptions[key] || '',
-    icon: icons[key] || '🏢',
-    accent: accents[key] || 'from-[#0F4C81]/10 to-[#F58220]/10',
-  }));
+  return sortByLocale(
+    Object.entries(categoryMap).map(([key, title]) => ({
+      title,
+      description: descriptions[key] || '',
+      icon: icons[key] || '🏢',
+      accent: accents[key] || 'from-[#0F4C81]/10 to-[#F58220]/10',
+    })),
+    language,
+    (item) => item.title
+  );
 }

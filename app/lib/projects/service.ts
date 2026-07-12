@@ -96,22 +96,6 @@ async function syncProjectsTrustCounters(companyId: string): Promise<void> {
   });
 }
 
-export async function findCompanyByUserEmail(email: string) {
-  return prisma.companyApplication.findFirst({
-    where: {
-      email,
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
-    select: {
-      id: true,
-      companyName: true,
-      email: true,
-    },
-  });
-}
-
 export async function createCompanyProject(companyId: string, input: CreateProjectInput): Promise<ProjectDto> {
   const slug = await generateUniqueProjectSlug(input.title);
 

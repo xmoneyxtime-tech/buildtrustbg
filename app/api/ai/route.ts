@@ -1,12 +1,27 @@
 import { NextResponse } from "next/server";
+import { enforceRateLimit } from "@/app/lib/security/rate-limit";
+import { validateAiMessageInput } from "@/app/lib/validation/ai";
+import { invalidJsonResponse, validationErrorResponse } from "@/app/lib/validation/http";
 
 export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const message = body?.message;
+  const rateLimited = enforceRateLimit(req, "ai");
+  if (rateLimited) {
+    return rateLimited;
+  }
 
-    if (!message) {
-      return NextResponse.json({ error: "No message sent" });
+  try {
+    let body: unknown;
+
+    try {
+      body = await req.json();
+    } catch {
+      return invalidJsonResponse();
+    }
+
+    const parsed = validateAiMessageInput(body);
+
+    if (!parsed.success) {
+      return validationErrorResponse(parsed.issues);
     }
 
     const response = await fetch(
@@ -27,7 +42,7 @@ export async function POST(req: Request) {
             },
             {
               role: "user",
-              content: message,
+              content: parsed.data.message,
             },
           ],
         }),

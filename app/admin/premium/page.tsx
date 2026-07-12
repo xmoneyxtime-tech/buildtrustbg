@@ -5,9 +5,14 @@ import { AdminTable } from "@/app/components/ui/AdminTable";
 import { AdminBadge } from "@/app/components/ui/AdminBadge";
 import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockCompanies } from "@/app/lib/mock-admin-data";
+import { sortByLocale } from "@/app/lib/sorting";
 
 export default function PremiumCompaniesPage() {
-  const premiumCompanies = mockCompanies.filter((c) => c.verification === "premium");
+  const premiumCompanies = sortByLocale(
+    mockCompanies.filter((c) => c.verification === "premium"),
+    "bg",
+    (company) => company.name
+  );
 
   return (
     <DashboardShell role="admin">

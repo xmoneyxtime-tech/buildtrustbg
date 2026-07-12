@@ -92,7 +92,7 @@ export function buildCategoryTree<T extends { id: string; parentId: string | nul
     byParent.set(key, bucket);
   }
 
-  const build = (parentId: string | null): Array<T & { children: Array<T & { children: any[] }> }> => {
+  const build = (parentId: string | null): Array<T & { children: Array<T & { children: unknown[] }> }> => {
     const list = byParent.get(parentId) || [];
     return list.map((item) => ({
       ...item,

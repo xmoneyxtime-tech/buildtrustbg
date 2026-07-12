@@ -4,6 +4,7 @@ import { DashboardShell } from "@/app/components/ui";
 import { ApplicationCard } from "@/app/components/ui/ApplicationCard";
 import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockGoldApplications } from "@/app/lib/mock-admin-data";
+import { sortByLocale } from "@/app/lib/sorting";
 
 export default function GoldVerificationPage() {
   return (
@@ -11,7 +12,7 @@ export default function GoldVerificationPage() {
       <div className="space-y-6">
         <AdminNotice />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {mockGoldApplications.map((app) => (
+          {sortByLocale(mockGoldApplications, "bg", (application) => application.companyName).map((app) => (
             <ApplicationCard
               key={app.id}
               title={app.companyName}

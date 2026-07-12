@@ -1,22 +1,34 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { enforceRateLimit } from "@/app/lib/security/rate-limit";
+import { validateCompanyApplicationInput } from "@/app/lib/validation/company-application";
+import { invalidJsonResponse, validationErrorResponse } from "@/app/lib/validation/http";
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const categoryIds = Array.isArray(body.categoryIds)
-      ? body.categoryIds.map((value: unknown) => String(value)).filter(Boolean)
-      : [];
+  const rateLimited = enforceRateLimit(request, "companyApplication");
+  if (rateLimited) {
+    return rateLimited;
+  }
 
-    if (categoryIds.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "At least one category is required.",
-        },
-        { status: 400 }
-      );
+  try {
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      return invalidJsonResponse();
     }
+
+    const parsed = validateCompanyApplicationInput(body);
+
+    if (!parsed.success) {
+      return validationErrorResponse(parsed.issues, {
+        success: false,
+        message: parsed.issues[0]?.message || "Validation failed.",
+      });
+    }
+
+    const categoryIds = parsed.data.categoryIds;
 
     const categories = await prisma.category.findMany({
       where: {
@@ -37,13 +49,10 @@ export async function POST(request: Request) {
     });
 
     if (categories.length !== categoryIds.length) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid category selection.",
-        },
-        { status: 400 }
-      );
+      return validationErrorResponse(["Invalid category selection."], {
+        success: false,
+        message: "Invalid category selection.",
+      });
     }
 
     const categoryServiceText = categories
@@ -52,13 +61,13 @@ export async function POST(request: Request) {
 
     const application = await prisma.companyApplication.create({
       data: {
-        companyName: body.companyName,
-        email: body.email,
-        phone: body.phone,
-        city: body.city,
-        service: categoryServiceText || body.service,
-        website: body.website || null,
-        description: body.description,
+        companyName: parsed.data.companyName,
+        email: parsed.data.email,
+        phone: parsed.data.phone,
+        city: parsed.data.city,
+        service: categoryServiceText || parsed.data.service,
+        website: parsed.data.website || null,
+        description: parsed.data.description,
         categories: {
           connect: categoryIds.map((id: string) => ({ id })),
         },
