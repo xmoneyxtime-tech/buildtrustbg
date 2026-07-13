@@ -7,7 +7,7 @@
 
 "use client";
 
-import { FC, useState, useCallback } from "react";
+import { FC, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "@/app/lib/i18n";
 import type { CompanyProfileUpdateInput } from "@/app/lib/company/types";
 import {
@@ -17,6 +17,7 @@ import {
   FormSection,
   FormSubmitButton,
 } from "./FormInputs";
+import { sortByLocale } from "@/app/lib/sorting";
 
 export const COUNTRIES = [
   { value: "bg", label: "Bulgaria" },
@@ -47,7 +48,7 @@ export const CITIES = [
 
 interface CompanyProfileEditFormProps {
   initialData?: CompanyProfileUpdateInput;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: unknown) => void;
   onError?: (error: string) => void;
 }
 
@@ -56,11 +57,14 @@ export const CompanyProfileEditForm: FC<CompanyProfileEditFormProps> = ({
   onSuccess,
   onError,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<CompanyProfileUpdateInput>(initialData);
   const [successMessage, setSuccessMessage] = useState("");
+  const sortedIndustries = useMemo(() => sortByLocale(INDUSTRIES, language, (item) => item.label), [language]);
+  const sortedCountries = useMemo(() => sortByLocale(COUNTRIES, language, (item) => item.label), [language]);
+  const sortedCities = useMemo(() => sortByLocale(CITIES, language, (item) => item.label), [language]);
 
   const handleInputChange = useCallback(
     (field: keyof CompanyProfileUpdateInput, value: string) => {
@@ -147,7 +151,7 @@ export const CompanyProfileEditForm: FC<CompanyProfileEditFormProps> = ({
         />
         <FormSelect
           label={t("formLabels.industry")}
-          options={INDUSTRIES}
+          options={sortedIndustries}
           value={formData.industry || ""}
           onChange={(e) => handleInputChange("industry", e.target.value)}
           error={errors.industry}
@@ -205,14 +209,14 @@ export const CompanyProfileEditForm: FC<CompanyProfileEditFormProps> = ({
       >
         <FormSelect
           label={t("formLabels.country")}
-          options={COUNTRIES}
+          options={sortedCountries}
           value={formData.country || ""}
           onChange={(e) => handleInputChange("country", e.target.value)}
           error={errors.country}
         />
         <FormSelect
           label={t("formLabels.city")}
-          options={CITIES}
+          options={sortedCities}
           value={formData.city || ""}
           onChange={(e) => handleInputChange("city", e.target.value)}
           error={errors.city}

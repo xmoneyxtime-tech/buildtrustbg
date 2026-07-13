@@ -99,7 +99,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<UpdatePro
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid JSON in request body",
+          message: "Invalid JSON payload",
         },
         { status: 400 }
       );
@@ -111,6 +111,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<UpdatePro
         {
           success: false,
           message: "No fields provided for update",
+          profile: undefined,
         },
         { status: 400 }
       );
@@ -122,7 +123,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<UpdatePro
       return NextResponse.json(
         {
           success: false,
-          message: "Validation failed",
+          message: `Validation failed: ${validationErrors.join(", ")}`,
           profile: undefined,
         },
         { status: 400 }

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { enforceRateLimit } from "@/app/lib/security/rate-limit";
+import { invalidJsonResponse, validationErrorResponse } from "@/app/lib/validation/http";
 import { findUserByEmail, setReviewReaction, validateReactionInput } from "@/app/lib/reviews";
 import type { SetReviewReactionInput } from "@/app/lib/reviews";
 
@@ -8,6 +10,11 @@ type RouteContext = {
 };
 
 export async function POST(request: Request, context: RouteContext) {
+  const rateLimited = enforceRateLimit(request, "reviewReaction");
+  if (rateLimited) {
+    return rateLimited;
+  }
+
   const session = await auth();
   const email = session?.user?.email;
 
@@ -26,13 +33,13 @@ export async function POST(request: Request, context: RouteContext) {
   try {
     body = (await request.json()) as SetReviewReactionInput;
   } catch {
-    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    return invalidJsonResponse();
   }
 
   const errors = validateReactionInput(body);
 
   if (errors.length > 0) {
-    return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
+    return validationErrorResponse(errors);
   }
 
   const { id } = await context.params;

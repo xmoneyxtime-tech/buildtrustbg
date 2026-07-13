@@ -6,6 +6,7 @@ import { Button, FeatureCard, SectionTitle } from "../ui";
 import { getLocalizedCities, getLocalizedFeaturedCategories } from "@/app/lib/localized-data";
 import { useTranslation } from "@/app/lib/i18n";
 import { normalizeLocale } from "@/app/lib/categories/shared";
+import { sortByLocale } from "@/app/lib/sorting";
 
 type HomeCategoryOption = {
   id: string;
@@ -44,10 +45,14 @@ export function HomeContent({ companies }: { companies: HomeCompany[] }) {
 
       const data = (await response.json()) as { categories: HomeCategoryOption[] };
       setServiceOptions(
-        data.categories.map((category) => ({
-          value: category.slug,
-          label: category.name,
-        }))
+        sortByLocale(
+          data.categories.map((category) => ({
+            value: category.slug,
+            label: category.name,
+          })),
+          locale,
+          (item) => item.label
+        )
       );
     }
 

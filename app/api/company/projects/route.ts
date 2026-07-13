@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { enforceRateLimit } from "@/app/lib/security/rate-limit";
+import { getCompanyForUser } from "@/app/lib/services/ownership";
+import { invalidJsonResponse, validationErrorResponse } from "@/app/lib/validation/http";
 import {
   createCompanyProject,
-  findCompanyByUserEmail,
   listCompanyProjects,
   sanitizeCreateProjectInput,
   validateCreateProjectInput,
@@ -17,12 +19,13 @@ import type {
 export async function GET() {
   const session = await auth();
   const email = session?.user?.email;
+  const userId = (session?.user as { id?: string } | undefined)?.id;
 
   if (!email) {
     return NextResponse.json<ApiErrorResponse>({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const company = await findCompanyByUserEmail(email);
+  const company = await getCompanyForUser({ userId, email });
 
   if (!company) {
     return NextResponse.json<ApiErrorResponse>({ error: "Company not found" }, { status: 404 });
@@ -34,14 +37,20 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const rateLimited = enforceRateLimit(request, "companyProjectWrite");
+  if (rateLimited) {
+    return rateLimited;
+  }
+
   const session = await auth();
   const email = session?.user?.email;
+  const userId = (session?.user as { id?: string } | undefined)?.id;
 
   if (!email) {
     return NextResponse.json<ApiErrorResponse>({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const company = await findCompanyByUserEmail(email);
+  const company = await getCompanyForUser({ userId, email });
 
   if (!company) {
     return NextResponse.json<ApiErrorResponse>({ error: "Company not found" }, { status: 404 });
@@ -52,13 +61,13 @@ export async function POST(request: Request) {
   try {
     body = (await request.json()) as CreateProjectInput;
   } catch {
-    return NextResponse.json<ApiErrorResponse>({ error: "Invalid JSON payload" }, { status: 400 });
+    return invalidJsonResponse();
   }
 
   const errors = validateCreateProjectInput(body);
 
   if (errors.length > 0) {
-    return NextResponse.json<ApiErrorResponse>({ error: errors.join(" ") }, { status: 400 });
+    return validationErrorResponse(errors);
   }
 
   const project = await createCompanyProject(company.id, sanitizeCreateProjectInput(body));

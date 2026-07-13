@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcrypt";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "@/auth.config";
+import { validateLoginCredentials } from "@/app/lib/validation/auth";
 
 export const {
   handlers,
@@ -29,13 +30,15 @@ export const {
       },
 
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        const parsed = validateLoginCredentials(credentials);
+
+        if (!parsed.success) {
           return null;
         }
 
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email as string,
+            email: parsed.data.email,
           },
         });
 
@@ -43,7 +46,7 @@ export const {
           return null;
         }
 
-        const valid = await compare(credentials.password as string, user.password);
+        const valid = await compare(parsed.data.password, user.password);
 
         if (!valid) {
           return null;

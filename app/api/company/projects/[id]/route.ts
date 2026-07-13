@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { enforceRateLimit } from "@/app/lib/security/rate-limit";
+import { getCompanyForUser } from "@/app/lib/services/ownership";
+import { invalidJsonResponse, validationErrorResponse } from "@/app/lib/validation/http";
 import {
   deleteCompanyProject,
-  findCompanyByUserEmail,
   sanitizeUpdateProjectInput,
   updateCompanyProject,
   validateUpdateProjectInput,
@@ -14,14 +16,20 @@ type RouteContext = {
 };
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const rateLimited = enforceRateLimit(request, "companyProjectWrite");
+  if (rateLimited) {
+    return rateLimited;
+  }
+
   const session = await auth();
   const email = session?.user?.email;
+  const userId = (session?.user as { id?: string } | undefined)?.id;
 
   if (!email) {
     return NextResponse.json<ApiErrorResponse>({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const company = await findCompanyByUserEmail(email);
+  const company = await getCompanyForUser({ userId, email });
 
   if (!company) {
     return NextResponse.json<ApiErrorResponse>({ error: "Company not found" }, { status: 404 });
@@ -32,13 +40,13 @@ export async function PATCH(request: Request, context: RouteContext) {
   try {
     body = (await request.json()) as UpdateProjectInput;
   } catch {
-    return NextResponse.json<ApiErrorResponse>({ error: "Invalid JSON payload" }, { status: 400 });
+    return invalidJsonResponse();
   }
 
   const errors = validateUpdateProjectInput(body);
 
   if (errors.length > 0) {
-    return NextResponse.json<ApiErrorResponse>({ error: errors.join(" ") }, { status: 400 });
+    return validationErrorResponse(errors);
   }
 
   const { id } = await context.params;
@@ -51,15 +59,21 @@ export async function PATCH(request: Request, context: RouteContext) {
   return NextResponse.json<CompanyProjectResponse>({ project }, { status: 200 });
 }
 
-export async function DELETE(_request: Request, context: RouteContext) {
+export async function DELETE(request: Request, context: RouteContext) {
+  const rateLimited = enforceRateLimit(request, "companyProjectWrite");
+  if (rateLimited) {
+    return rateLimited;
+  }
+
   const session = await auth();
   const email = session?.user?.email;
+  const userId = (session?.user as { id?: string } | undefined)?.id;
 
   if (!email) {
     return NextResponse.json<ApiErrorResponse>({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const company = await findCompanyByUserEmail(email);
+  const company = await getCompanyForUser({ userId, email });
 
   if (!company) {
     return NextResponse.json<ApiErrorResponse>({ error: "Company not found" }, { status: 404 });

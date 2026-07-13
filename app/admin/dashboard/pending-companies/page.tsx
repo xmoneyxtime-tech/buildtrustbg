@@ -4,9 +4,14 @@ import { DashboardShell } from "@/app/components/ui";
 import { AdminTable } from "@/app/components/ui/AdminTable";
 import { AdminNotice } from "@/app/components/ui/AdminNotice";
 import { mockCompanies } from "@/app/lib/mock-admin-data";
+import { sortByLocale } from "@/app/lib/sorting";
 
 export default function PendingCompaniesPage() {
-  const pendingCompanies = mockCompanies.filter((c) => c.status === "pending");
+  const pendingCompanies = sortByLocale(
+    mockCompanies.filter((c) => c.status === "pending"),
+    "bg",
+    (company) => company.name
+  );
 
   return (
     <DashboardShell role="admin">
