@@ -7,24 +7,24 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  password      String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  emailVerified DateTime?
-  image         String?
-  name          String?
-  role          UserRole  @default(USER)
-  accounts      Account[]
-  sessions      Session[]
-  reviews       Review[]
-  reviewReplies ReviewReply[]
-  reviewReports ReviewReport[]          @relation("ReviewReportsByUser")
-  resolvedReviewReports ReviewReport[]  @relation("ReviewReportsResolvedBy")
-  reviewReactions ReviewReaction[]
-  reviewModerationLogs ReviewModerationLog[] @relation("ReviewModerationByAdmin")
-  ownedCompanies CompanyApplication[]   @relation("CompanyOwner")
+  id                    String                @id @default(cuid())
+  email                 String                @unique
+  password              String?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  emailVerified         DateTime?
+  image                 String?
+  name                  String?
+  role                  UserRole              @default(USER)
+  accounts              Account[]
+  sessions              Session[]
+  reviews               Review[]
+  reviewReplies         ReviewReply[]
+  reviewReports         ReviewReport[]        @relation("ReviewReportsByUser")
+  resolvedReviewReports ReviewReport[]        @relation("ReviewReportsResolvedBy")
+  reviewReactions       ReviewReaction[]
+  reviewModerationLogs  ReviewModerationLog[] @relation("ReviewModerationByAdmin")
+  ownedCompanies        CompanyApplication[]  @relation("CompanyOwner")
 }
 
 model Account {
@@ -62,65 +62,71 @@ model VerificationToken {
 }
 
 model CompanyApplication {
-  id          String            @id @default(cuid())
-  slug        String?           @unique
-  ownerId     String?
-  companyName String
-  email       String
-  phone       String
-  industry    String?
-  country     String?
-  city        String
-  address     String?
-  service     String
-  website     String?
-  description String
-  logoUrl     String?
-  coverUrl    String?
-  isVerified        Boolean @default(false)
-  identityVerified  Boolean @default(false)
-  phoneVerified     Boolean @default(false)
-  portfolioCount    Int     @default(0)
-  projectsCount     Int     @default(0)
-  reviewsCount      Int     @default(0)
-  averageRating     Float   @default(0)
-  yearsInBusiness   Int?
-  certificatesCount Int     @default(0)
-  galleryCount      Int     @default(0)
-  responseTimeHours Int?
-  activeSubscription Boolean @default(false)
-  status      ApplicationStatus @default(PENDING)
-  projects    Project[]
-  reviews     Review[]
-  reviewReplies ReviewReply[]
-  verifications Verification[]
-  categories  Category[]
-  owner       User?             @relation("CompanyOwner", fields: [ownerId], references: [id], onDelete: SetNull)
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id                    String                 @id @default(cuid())
+  slug                  String?                @unique
+  ownerId               String?
+  companyName           String
+  email                 String
+  phone                 String
+  industry              String?
+  country               String?
+  city                  String
+  address               String?
+  service               String
+  website               String?
+  description           String
+  logoUrl               String?
+  coverUrl              String?
+  isVerified            Boolean                @default(false)
+  identityVerified      Boolean                @default(false)
+  phoneVerified         Boolean                @default(false)
+  portfolioCount        Int                    @default(0)
+  projectsCount         Int                    @default(0)
+  reviewsCount          Int                    @default(0)
+  averageRating         Float                  @default(0)
+  yearsInBusiness       Int?
+  certificatesCount     Int                    @default(0)
+  galleryCount          Int                    @default(0)
+  responseTimeHours     Int?
+  activeSubscription    Boolean                @default(false)
+  status                ApplicationStatus      @default(PENDING)
+  projects              Project[]
+  reviews               Review[]
+  subscriptions         Subscription[]
+  orders                Order[]
+  payments              Payment[]
+  invoices              Invoice[]
+  storedPaymentMethods  StoredPaymentMethod[]
+  paymentProviderEvents PaymentProviderEvent[]
+  reviewReplies         ReviewReply[]
+  verifications         Verification[]
+  categories            Category[]
+  owner                 User?                  @relation("CompanyOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 
   @@index([ownerId])
 }
 
 model Category {
-  id             String               @id @default(cuid())
+  id             String                @id @default(cuid())
   name           String
   description    String
-  slug           String               @unique
+  slug           String                @unique
   icon           String
   image          String?
-  featured       Boolean              @default(false)
-  popular        Boolean              @default(false)
-  premiumOnly    Boolean              @default(false)
-  searchKeywords String[]             @default([])
-  synonyms       String[]             @default([])
+  featured       Boolean               @default(false)
+  popular        Boolean               @default(false)
+  premiumOnly    Boolean               @default(false)
+  searchKeywords String[]              @default([])
+  synonyms       String[]              @default([])
   parentId       String?
-  sortOrder      Int                  @default(0)
-  isActive       Boolean              @default(true)
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
-  parent         Category?            @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
-  children       Category[]           @relation("CategoryHierarchy")
+  sortOrder      Int                   @default(0)
+  isActive       Boolean               @default(true)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  parent         Category?             @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children       Category[]            @relation("CategoryHierarchy")
   companies      CompanyApplication[]
   translations   CategoryTranslation[]
 
@@ -146,78 +152,78 @@ model CategoryTranslation {
 }
 
 model Project {
-  id               String          @id @default(cuid())
+  id               String             @id @default(cuid())
   companyId        String
-  slug             String          @unique
+  slug             String             @unique
   title            String
   shortDescription String
   description      String
   category         ProjectCategory
   city             String
   completedAt      DateTime?
-  featured         Boolean         @default(false)
-  published        Boolean         @default(false)
-  status           ProjectStatus   @default(DRAFT)
+  featured         Boolean            @default(false)
+  published        Boolean            @default(false)
+  status           ProjectStatus      @default(DRAFT)
   images           ProjectImage[]
   reviews          Review[]
   company          CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   @@index([companyId])
   @@index([published])
 }
 
 model ProjectImage {
-  id       String   @id @default(cuid())
+  id        String  @id @default(cuid())
   projectId String
-  imageUrl String
-  order    Int      @default(0)
-  altText  String?
-  project  Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  order     Int     @default(0)
+  altText   String?
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
 }
 
 model Verification {
-  id          String             @id @default(cuid())
-  companyId   String
-  type        VerificationType
-  status      VerificationStatus @default(PENDING)
-  reference   String?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  company     CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  reviews     Review[]
+  id        String             @id @default(cuid())
+  companyId String
+  type      VerificationType
+  status    VerificationStatus @default(PENDING)
+  reference String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  company   CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  reviews   Review[]
 
   @@index([companyId, status])
 }
 
 model Review {
-  id              String                 @id @default(cuid())
-  companyId       String
-  projectId       String
-  userId          String
-  verificationId  String?
-  rating          Int
-  title           String
-  description     String
-  status          ReviewStatus           @default(PENDING)
-  verified        Boolean                @default(false)
-  isSpam          Boolean                @default(false)
-  spamScore       Int                    @default(0)
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @updatedAt
-  approvedAt      DateTime?
-  company         CompanyApplication     @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  project         Project                @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  verification    Verification?          @relation(fields: [verificationId], references: [id], onDelete: SetNull)
-  reply           ReviewReply?
-  reports         ReviewReport[]
-  reactions       ReviewReaction[]
-  attachments     ReviewAttachment[]
-  moderationLogs  ReviewModerationLog[]
+  id             String                @id @default(cuid())
+  companyId      String
+  projectId      String
+  userId         String
+  verificationId String?
+  rating         Int
+  title          String
+  description    String
+  status         ReviewStatus          @default(PENDING)
+  verified       Boolean               @default(false)
+  isSpam         Boolean               @default(false)
+  spamScore      Int                   @default(0)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  approvedAt     DateTime?
+  company        CompanyApplication    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  project        Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verification   Verification?         @relation(fields: [verificationId], references: [id], onDelete: SetNull)
+  reply          ReviewReply?
+  reports        ReviewReport[]
+  reactions      ReviewReaction[]
+  attachments    ReviewAttachment[]
+  moderationLogs ReviewModerationLog[]
 
   @@unique([userId, projectId])
   @@index([companyId, status, createdAt])
@@ -225,80 +231,343 @@ model Review {
 }
 
 model ReviewReply {
-  id          String             @id @default(cuid())
-  reviewId    String             @unique
-  companyId   String
-  userId      String
-  content     String
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  review      Review             @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  company     CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String             @id @default(cuid())
+  reviewId  String             @unique
+  companyId String
+  userId    String
+  content   String
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  review    Review             @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  company   CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([companyId, createdAt])
 }
 
 model ReviewReport {
-  id            String             @id @default(cuid())
-  reviewId       String
-  reporterId     String
-  resolvedById   String?
-  reason         ReviewReportReason
-  details        String?
-  status         ReviewReportStatus @default(OPEN)
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  resolvedAt     DateTime?
-  review         Review             @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  reporter       User               @relation("ReviewReportsByUser", fields: [reporterId], references: [id], onDelete: Cascade)
-  resolvedBy     User?              @relation("ReviewReportsResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
+  id           String             @id @default(cuid())
+  reviewId     String
+  reporterId   String
+  resolvedById String?
+  reason       ReviewReportReason
+  details      String?
+  status       ReviewReportStatus @default(OPEN)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  resolvedAt   DateTime?
+  review       Review             @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reporter     User               @relation("ReviewReportsByUser", fields: [reporterId], references: [id], onDelete: Cascade)
+  resolvedBy   User?              @relation("ReviewReportsResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
 
   @@unique([reviewId, reporterId])
   @@index([status, createdAt])
 }
 
 model ReviewReaction {
-  id          String            @id @default(cuid())
-  reviewId    String
-  userId      String
-  type        ReviewReactionType
-  createdAt   DateTime          @default(now())
-  review      Review            @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String             @id @default(cuid())
+  reviewId  String
+  userId    String
+  type      ReviewReactionType
+  createdAt DateTime           @default(now())
+  review    Review             @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([reviewId, userId])
   @@index([reviewId, type])
 }
 
 model ReviewAttachment {
-  id          String   @id @default(cuid())
-  reviewId    String
-  fileUrl     String
-  mimeType    String?
-  fileSize    Int?
-  altText     String?
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  review      Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  reviewId  String
+  fileUrl   String
+  mimeType  String?
+  fileSize  Int?
+  altText   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 
   @@index([reviewId, order])
 }
 
 model ReviewModerationLog {
-  id          String                 @id @default(cuid())
-  reviewId     String
-  adminId      String
-  action       ReviewModerationAction
-  reason       String?
-  fromStatus   ReviewStatus?
-  toStatus     ReviewStatus
-  createdAt    DateTime               @default(now())
-  review       Review                 @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  admin        User                   @relation("ReviewModerationByAdmin", fields: [adminId], references: [id], onDelete: Cascade)
+  id         String                 @id @default(cuid())
+  reviewId   String
+  adminId    String
+  action     ReviewModerationAction
+  reason     String?
+  fromStatus ReviewStatus?
+  toStatus   ReviewStatus
+  createdAt  DateTime               @default(now())
+  review     Review                 @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  admin      User                   @relation("ReviewModerationByAdmin", fields: [adminId], references: [id], onDelete: Cascade)
 
   @@index([reviewId, createdAt])
   @@index([adminId, createdAt])
+}
+
+model Plan {
+  id            String         @id @default(cuid())
+  code          String         @unique
+  name          String
+  description   String?
+  interval      PlanInterval
+  currency      String         @default("BGN")
+  priceMinor    Int
+  trialDays     Int            @default(0)
+  isActive      Boolean        @default(true)
+  sortOrder     Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  products      Product[]
+  subscriptions Subscription[]
+  promotions    Promotion[]
+
+  @@index([isActive, sortOrder])
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  code        String      @unique
+  name        String
+  description String?
+  type        ProductType
+  planId      String?
+  currency    String      @default("BGN")
+  priceMinor  Int
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  plan        Plan?       @relation(fields: [planId], references: [id], onDelete: SetNull)
+  orderItems  OrderItem[]
+  promotions  Promotion[]
+
+  @@index([type, isActive])
+  @@index([planId])
+}
+
+model Subscription {
+  id                 String                 @id @default(cuid())
+  companyId          String
+  planId             String
+  planName           String                 @default("")
+  billingInterval    PlanInterval           @default(MONTHLY)
+  currency           String                 @default("BGN")
+  priceAmount        Int                    @default(0)
+  status             SubscriptionStatus     @default(PENDING)
+  startsAt           DateTime               @default(now())
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  canceledAt         DateTime?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  company            CompanyApplication     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  plan               Plan                   @relation(fields: [planId], references: [id], onDelete: Restrict)
+  payments           Payment[]
+  invoices           Invoice[]
+  providerEvents     PaymentProviderEvent[]
+
+  @@index([companyId, status])
+  @@index([planId])
+}
+
+model Order {
+  id             String                 @id @default(cuid())
+  companyId      String
+  couponId       String?
+  promotionId    String?
+  status         OrderStatus            @default(PENDING)
+  isImmutable    Boolean                @default(false)
+  immutableAt    DateTime?
+  currency       String                 @default("BGN")
+  subtotalMinor  Int                    @default(0)
+  discountMinor  Int                    @default(0)
+  taxMinor       Int                    @default(0)
+  totalMinor     Int                    @default(0)
+  placedAt       DateTime?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  company        CompanyApplication     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  coupon         Coupon?                @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  promotion      Promotion?             @relation(fields: [promotionId], references: [id], onDelete: SetNull)
+  items          OrderItem[]
+  payments       Payment[]
+  invoice        Invoice?
+  providerEvents PaymentProviderEvent[]
+
+  @@index([companyId, status])
+  @@index([couponId])
+  @@index([promotionId])
+}
+
+model OrderItem {
+  id              String   @id @default(cuid())
+  orderId         String
+  productId       String
+  quantity        Int      @default(1)
+  unitPriceMinor  Int
+  totalPriceMinor Int
+  createdAt       DateTime @default(now())
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Payment {
+  id                     String                 @id @default(cuid())
+  companyId              String
+  orderId                String?
+  subscriptionId         String?
+  invoiceId              String?
+  storedPaymentMethodId  String?
+  provider               PaymentProvider        @default(INTERNAL)
+  providerPaymentId      String?
+  providerCustomerId     String?
+  providerSubscriptionId String?
+  status                 PaymentStatus          @default(PENDING)
+  method                 PaymentMethod
+  currency               String                 @default("BGN")
+  amountMinor            Int
+  paidAt                 DateTime?
+  failedAt               DateTime?
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  company                CompanyApplication     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  order                  Order?                 @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  subscription           Subscription?          @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  invoice                Invoice?               @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  storedPaymentMethod    StoredPaymentMethod?   @relation(fields: [storedPaymentMethodId], references: [id], onDelete: SetNull)
+  providerEvents         PaymentProviderEvent[]
+
+  @@index([companyId, status])
+  @@index([orderId])
+  @@index([subscriptionId])
+  @@index([invoiceId])
+  @@index([storedPaymentMethodId])
+  @@index([provider, providerPaymentId])
+}
+
+model Invoice {
+  id             String             @id @default(cuid())
+  number         String             @unique
+  companyId      String
+  orderId        String?            @unique
+  subscriptionId String?
+  status         InvoiceStatus      @default(DRAFT)
+  currency       String             @default("BGN")
+  subtotalMinor  Int                @default(0)
+  discountMinor  Int                @default(0)
+  taxMinor       Int                @default(0)
+  totalMinor     Int                @default(0)
+  issuedAt       DateTime?
+  dueAt          DateTime?
+  paidAt         DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  company        CompanyApplication @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  order          Order?             @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  subscription   Subscription?      @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  payments       Payment[]
+
+  @@index([companyId, status])
+  @@index([subscriptionId])
+}
+
+model Coupon {
+  id             String       @id @default(cuid())
+  code           String       @unique
+  name           String
+  description    String?
+  type           CouponType
+  value          Int
+  currency       String?
+  status         CouponStatus @default(ACTIVE)
+  maxRedemptions Int?
+  redeemedCount  Int          @default(0)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  promotions     Promotion[]
+  orders         Order[]
+
+  @@index([status, startsAt, endsAt])
+}
+
+model Promotion {
+  id          String          @id @default(cuid())
+  code        String          @unique
+  name        String
+  description String?
+  status      PromotionStatus @default(ACTIVE)
+  couponId    String?
+  planId      String?
+  productId   String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  coupon      Coupon?         @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  plan        Plan?           @relation(fields: [planId], references: [id], onDelete: SetNull)
+  product     Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  orders      Order[]
+
+  @@index([status, startsAt, endsAt])
+  @@index([couponId])
+  @@index([planId])
+  @@index([productId])
+}
+
+model StoredPaymentMethod {
+  id                      String                    @id @default(cuid())
+  companyId               String
+  provider                PaymentProvider           @default(INTERNAL)
+  providerCustomerId      String?
+  providerPaymentMethodId String
+  type                    StoredPaymentMethodType
+  brand                   String?
+  last4                   String?
+  expMonth                Int?
+  expYear                 Int?
+  isDefault               Boolean                   @default(false)
+  status                  StoredPaymentMethodStatus @default(ACTIVE)
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  company                 CompanyApplication        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  payments                Payment[]
+
+  @@unique([provider, providerPaymentMethodId])
+  @@index([companyId, status])
+}
+
+model PaymentProviderEvent {
+  id              String                     @id @default(cuid())
+  provider        PaymentProvider
+  providerEventId String
+  eventType       String
+  status          PaymentProviderEventStatus @default(RECEIVED)
+  payload         Json
+  companyId       String?
+  paymentId       String?
+  orderId         String?
+  subscriptionId  String?
+  receivedAt      DateTime                   @default(now())
+  processedAt     DateTime?
+  errorMessage    String?
+  company         CompanyApplication?        @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  payment         Payment?                   @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  order           Order?                     @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  subscription    Subscription?              @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, providerEventId])
+  @@index([status, receivedAt])
+  @@index([companyId])
+  @@index([paymentId])
+  @@index([orderId])
+  @@index([subscriptionId])
 }
 
 enum UserRole {
@@ -375,4 +644,97 @@ enum ReviewModerationAction {
   FLAG
   REPORT_RESOLVED
   REPORT_REJECTED
+}
+
+enum PlanInterval {
+  MONTHLY
+  YEARLY
+}
+
+enum ProductType {
+  SUBSCRIPTION
+  ONE_TIME
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CARD
+  BANK_TRANSFER
+  CASH
+  OTHER
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  VOID
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum CouponStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+enum PromotionStatus {
+  ACTIVE
+  INACTIVE
+  SCHEDULED
+  EXPIRED
+}
+
+enum PaymentProvider {
+  INTERNAL
+  STRIPE
+  PAYPAL
+  OTHER
+}
+
+enum StoredPaymentMethodType {
+  CARD
+  BANK_ACCOUNT
+  WALLET
+  OTHER
+}
+
+enum StoredPaymentMethodStatus {
+  ACTIVE
+  INACTIVE
+  REVOKED
+}
+
+enum PaymentProviderEventStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+  IGNORED
 }
