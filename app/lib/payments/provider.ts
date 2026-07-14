@@ -37,12 +37,40 @@ export type CreateProviderPaymentResult = {
   status: "pending" | "requires_action" | "succeeded" | "failed";
 };
 
+export type ProviderCheckoutLineItem = {
+  productId: string;
+  name: string;
+  description?: string;
+  quantity: number;
+  unitAmountMinor: number;
+  currency: SupportedPaymentCurrency;
+};
+
+export type CreateCheckoutSessionInput = {
+  companyId: string;
+  orderId?: string;
+  idempotencyKey?: string;
+  successUrl: string;
+  cancelUrl: string;
+  lineItems: ProviderCheckoutLineItem[];
+  metadata?: Record<string, string>;
+};
+
+export type CreateCheckoutSessionResult = {
+  providerCheckoutSessionId: string;
+  checkoutUrl: string;
+};
+
 export interface PaymentProvider {
   readonly name: PaymentProviderName;
 
   createCustomer(input: CreateProviderCustomerInput): Promise<CreateProviderCustomerResult>;
 
   createPayment(input: CreateProviderPaymentInput): Promise<CreateProviderPaymentResult>;
+
+  createCheckoutSession(input: CreateCheckoutSessionInput): Promise<CreateCheckoutSessionResult>;
+
+  getCheckoutSession(providerCheckoutSessionId: string): Promise<CreateCheckoutSessionResult>;
 
   attachPaymentMethod(input: AttachProviderPaymentMethodInput): Promise<void>;
 
