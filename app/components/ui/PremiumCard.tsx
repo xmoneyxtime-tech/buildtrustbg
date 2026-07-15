@@ -18,15 +18,26 @@ export function PremiumCard() {
       <div className="flex items-start justify-between">
         <div>
           <span className="inline-flex rounded-full border border-[#F58220]/30 bg-[#FFE8D0] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#F58220]">
-            {t("premiumFeatures.premiumBadge")}
+            Premium
           </span>
-          <h3 className="mt-4 text-2xl font-semibold text-slate-900">{t("premiumFeatures.premiumTitle")}</h3>
-          <p className="mt-3 text-slate-700">
-            <span className="text-3xl font-bold text-slate-900">{t("premiumFeatures.premiumPrice")} €</span>
-            <span className="text-slate-600"> / {t("premiumFeatures.premiumPriceUnit").split(" / ")[1]}</span>
-          </p>
+          <h3 className="mt-4 text-2xl font-semibold text-slate-900">Premium</h3>
+          <div className="mt-3 space-y-2 text-slate-700">
+            <p>
+              <span className="text-3xl font-bold text-slate-900">€49.99</span>
+              <span className="text-slate-600"> / month</span>
+            </p>
+            <div className="flex items-center gap-2">
+              <p>
+                <span className="text-xl font-semibold text-slate-900">€499</span>
+                <span className="text-slate-600"> / year</span>
+              </p>
+              <span className="inline-flex rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                Save €100
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="text-4xl">💎</div>
+        <div className="rounded-full border border-[#F58220]/30 bg-[#FFE8D0] px-3 py-1 text-sm font-semibold text-[#F58220]">Premium</div>
       </div>
 
       <div className="mt-6 space-y-2">

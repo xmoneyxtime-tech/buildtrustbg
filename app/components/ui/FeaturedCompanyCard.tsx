@@ -10,15 +10,15 @@ export function FeaturedCompanyCard() {
       <div className="flex items-start justify-between">
         <div>
           <span className="inline-flex rounded-full border border-[#F58220]/25 bg-[#FFF7EE] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#F58220]">
-            {t("featured.featuredBadge")}
+            Starter
           </span>
-          <h3 className="mt-4 text-2xl font-semibold text-slate-900">{t("featured.featuredTitle")}</h3>
+          <h3 className="mt-4 text-2xl font-semibold text-slate-900">Starter</h3>
           <p className="mt-3 text-slate-700">
-            <span className="text-3xl font-bold text-slate-900">{t("featured.featuredPrice")} €</span>
-            <span className="text-slate-600"> / {t("featured.featuredPriceUnit").split(" / ")[1]}</span>
+            <span className="text-3xl font-bold text-slate-900">€9.99</span>
+            <span className="text-slate-600"> / month</span>
           </p>
         </div>
-        <div className="text-4xl">⭐</div>
+        <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-700">Starter</div>
       </div>
 
       <div className="mt-6 space-y-3 rounded-2xl border border-[#F58220]/20 bg-[#FFF7EE] p-4 text-sm leading-7 text-slate-700">

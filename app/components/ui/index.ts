@@ -8,6 +8,7 @@ export { DashboardShell } from "./DashboardShell";
 export { Panel } from "./Panel";
 export { StatusBadge } from "./StatusBadge";
 export { Footer } from "./Footer";
+export { PaymentMethods } from "./PaymentMethods";
 export { MarketplaceForm } from "./MarketplaceForm";
 export { MarketplaceReviewList } from "./MarketplaceReviewList";
 export { OnboardingHero } from "./OnboardingHero";

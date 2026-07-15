@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getLocalizedCategories } from "@/app/lib/localized-data";
 import { useTranslation } from "@/app/lib/i18n";
+import { PaymentMethods } from "@/app/components/ui/PaymentMethods";
 
 export function Footer() {
   const { t, language } = useTranslation();
@@ -137,6 +138,8 @@ export function Footer() {
 
         {/* Divider */}
         <div className="border-t border-slate-200/80" />
+
+        <PaymentMethods compact className="max-w-xl" />
 
         {/* Footer Bottom */}
         <div className="flex flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">

@@ -4,6 +4,7 @@ import { DashboardShell } from "@/app/components/ui";
 import { GoldVerificationCard } from "@/app/components/ui/GoldVerificationCard";
 import { PremiumCard } from "@/app/components/ui/PremiumCard";
 import { FeaturedCompanyCard } from "@/app/components/ui/FeaturedCompanyCard";
+import { PaymentMethods } from "@/app/components/ui/PaymentMethods";
 import { useTranslation } from "@/app/lib/i18n";
 
 export default function SubscriptionPage() {
@@ -30,10 +31,27 @@ export default function SubscriptionPage() {
         <div>
           <h2 className="mb-4 text-lg font-semibold text-slate-900">{t("premiumFeatures.upgradeOptions")}</h2>
           <div className="grid gap-6 lg:grid-cols-3">
-            <GoldVerificationCard />
-            <PremiumCard />
             <FeaturedCompanyCard />
+            <PremiumCard />
+            <GoldVerificationCard />
           </div>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          <PaymentMethods />
+
+          <section
+            aria-label="Billing information"
+            className="rounded-[20px] border border-slate-200/80 bg-white p-5"
+          >
+            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-700">Billing information</h3>
+            <ul className="mt-3 space-y-2 text-sm text-slate-700">
+              <li>✓ Secure Checkout</li>
+              <li>✓ Instant activation after successful payment</li>
+              <li>✓ VAT invoice available</li>
+              <li>✓ Cancel anytime</li>
+            </ul>
+          </section>
         </div>
       </div>
     </DashboardShell>
