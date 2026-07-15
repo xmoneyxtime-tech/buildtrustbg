@@ -4,12 +4,14 @@ const isProduction = process.env.NODE_ENV === "production";
 const sessionMaxAge = 60 * 60 * 24 * 30;
 const sessionUpdateAge = 60 * 60 * 24;
 const ephemeralCookieMaxAge = 60 * 15;
+const authSecret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
+const authUrl = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL;
 
 export const authConfig: NextAuthConfig = {
   providers: [],
 
-  secret: process.env.AUTH_SECRET,
-  trustHost: !isProduction || Boolean(process.env.AUTH_URL),
+  secret: authSecret,
+  trustHost: !isProduction || Boolean(authUrl),
 
   session: {
     strategy: "jwt",
