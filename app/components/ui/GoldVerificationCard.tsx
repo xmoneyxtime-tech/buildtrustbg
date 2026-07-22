@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/app/lib/i18n";
+import { SubscriptionActionButton } from "@/app/company/dashboard/subscription/SubscriptionActionButton";
 
 export function GoldVerificationCard() {
   const { t } = useTranslation();
@@ -48,9 +49,20 @@ export function GoldVerificationCard() {
         ))}
       </div>
 
-      <button className="mt-6 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#0F4C81] px-6 text-sm font-semibold text-white transition hover:bg-[#0B3D67]">
-        {t("verification.applyNow")}
-      </button>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <SubscriptionActionButton
+          endpoint="/api/company/subscription/checkout"
+          payload={{ planCode: "gold", billingInterval: "monthly" }}
+          label={`${t("verification.applyNow")} Monthly`}
+          variant="primary"
+        />
+        <SubscriptionActionButton
+          endpoint="/api/company/subscription/checkout"
+          payload={{ planCode: "gold", billingInterval: "yearly" }}
+          label="Choose Yearly"
+          variant="secondary"
+        />
+      </div>
     </div>
   );
 }

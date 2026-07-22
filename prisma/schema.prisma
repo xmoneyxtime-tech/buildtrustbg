@@ -351,6 +351,7 @@ model Subscription {
   id                 String                 @id @default(cuid())
   companyId          String
   planId             String
+  providerSubscriptionId String?            @unique
   planName           String                 @default("")
   billingInterval    PlanInterval           @default(MONTHLY)
   currency           String                 @default("BGN")
@@ -456,12 +457,14 @@ model Invoice {
   companyId      String
   orderId        String?            @unique
   subscriptionId String?
+  providerInvoiceId String?         @unique
   status         InvoiceStatus      @default(DRAFT)
   currency       String             @default("BGN")
   subtotalMinor  Int                @default(0)
   discountMinor  Int                @default(0)
   taxMinor       Int                @default(0)
   totalMinor     Int                @default(0)
+  pdfUrl         String?
   issuedAt       DateTime?
   dueAt          DateTime?
   paidAt         DateTime?

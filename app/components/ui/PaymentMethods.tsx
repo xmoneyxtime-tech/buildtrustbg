@@ -3,7 +3,7 @@ type PaymentMethodsProps = {
   compact?: boolean;
 };
 
-const METHODS = ["Visa", "Mastercard", "Apple Pay", "Google Pay", "Stripe"];
+const METHODS = ["Visa", "Mastercard", "Apple Pay", "Google Pay", "Amex", "Stripe"];
 
 export function PaymentMethods({ className = "", compact = false }: PaymentMethodsProps) {
   const labelClass = compact

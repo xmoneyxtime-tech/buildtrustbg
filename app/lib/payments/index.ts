@@ -1,5 +1,15 @@
 export { PaymentService } from "./payment-service";
 export { StripeProvider } from "./providers/stripe-provider";
+export { StripeBillingService } from "./stripe-billing-service";
+export {
+  ensureCatalogEntry,
+  getCatalogEntry,
+  parsePlanCode,
+  parsePlanInterval,
+  type EnsuredCatalogEntry,
+  type SubscriptionBillingInterval,
+  type SubscriptionPlanCode,
+} from "./catalog";
 
 export {
   SUPPORTED_PAYMENT_CURRENCY,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/app/lib/i18n";
+import { SubscriptionActionButton } from "@/app/company/dashboard/subscription/SubscriptionActionButton";
 
 export function PremiumCard() {
   const { t } = useTranslation();
@@ -49,9 +50,21 @@ export function PremiumCard() {
         ))}
       </div>
 
-      <button className="mt-6 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#F58220] px-6 text-sm font-semibold text-white transition hover:bg-[#E36F00]">
-        {t("premiumFeatures.becomePremium")}
-      </button>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <SubscriptionActionButton
+          endpoint="/api/company/subscription/checkout"
+          payload={{ planCode: "premium", billingInterval: "monthly" }}
+          label={`${t("premiumFeatures.becomePremium")} Monthly`}
+          variant="primary"
+          className="bg-[#F58220] hover:bg-[#E36F00]"
+        />
+        <SubscriptionActionButton
+          endpoint="/api/company/subscription/checkout"
+          payload={{ planCode: "premium", billingInterval: "yearly" }}
+          label="Choose Yearly"
+          variant="secondary"
+        />
+      </div>
     </div>
   );
 }

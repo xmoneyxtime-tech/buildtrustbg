@@ -36,6 +36,7 @@ export function DashboardShell({ role, children }: DashboardShellProps) {
           { href: "/admin/dashboard/pending-companies", label: t("admin.pendingCompanies") },
           { href: "/admin/gold-verification", label: t("dashboard.verification") },
           { href: "/admin/premium", label: t("dashboardCompany.premium") },
+          { href: "/admin/dashboard/billing", label: "Billing" },
           { href: "/admin/dashboard/categories", label: t("admin.categories") },
           { href: "/admin/dashboard/cities", label: t("admin.cities") },
           { href: "/admin/dashboard/settings", label: t("admin.title") },

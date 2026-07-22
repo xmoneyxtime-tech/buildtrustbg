@@ -5,6 +5,7 @@ import { GoldVerificationCard } from "@/app/components/ui/GoldVerificationCard";
 import { PremiumCard } from "@/app/components/ui/PremiumCard";
 import { FeaturedCompanyCard } from "@/app/components/ui/FeaturedCompanyCard";
 import { PaymentMethods } from "@/app/components/ui/PaymentMethods";
+import { SubscriptionActionButton } from "./SubscriptionActionButton";
 import { useTranslation } from "@/app/lib/i18n";
 
 export default function SubscriptionPage() {
@@ -24,6 +25,13 @@ export default function SubscriptionPage() {
             <div className="rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold text-emerald-700">
               {t("status.active")}
             </div>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <SubscriptionActionButton
+              endpoint="/api/company/subscription/billing-portal"
+              label="Open Billing Portal"
+              variant="secondary"
+            />
           </div>
         </div>
 
