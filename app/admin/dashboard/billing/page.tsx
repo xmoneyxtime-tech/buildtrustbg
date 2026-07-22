@@ -1,6 +1,40 @@
-import { PaymentProviderEventStatus, PaymentStatus, SubscriptionStatus } from "@prisma/client";
+import { Prisma, PaymentProviderEventStatus, PaymentStatus, SubscriptionStatus } from "@prisma/client";
 import { DashboardShell } from "@/app/components/ui";
 import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+
+type BillingSnapshot = {
+  subscriptions: Prisma.SubscriptionGetPayload<{
+    include: {
+      company: {
+        select: { companyName: true };
+      };
+    };
+  }>[];
+  payments: Prisma.PaymentGetPayload<{
+    include: {
+      company: {
+        select: { companyName: true };
+      };
+    };
+  }>[];
+  invoices: Prisma.InvoiceGetPayload<{
+    include: {
+      company: {
+        select: { companyName: true };
+      };
+    };
+  }>[];
+  events: Prisma.PaymentProviderEventGetPayload<{
+    include: {
+      company: {
+        select: { companyName: true };
+      };
+    };
+  }>[];
+  degraded: boolean;
+};
 
 function formatAmount(amountMinor: number, currency: string): string {
   return new Intl.NumberFormat("en-IE", {
@@ -21,47 +55,7 @@ function formatDate(value: Date | null | undefined): string {
 }
 
 export default async function AdminBillingPage() {
-  const [subscriptions, payments, invoices, events] = await Promise.all([
-    prisma.subscription.findMany({
-      orderBy: { updatedAt: "desc" },
-      take: 12,
-      include: {
-        company: {
-          select: { companyName: true },
-        },
-      },
-    }),
-    prisma.payment.findMany({
-      orderBy: { updatedAt: "desc" },
-      take: 12,
-      include: {
-        company: {
-          select: { companyName: true },
-        },
-      },
-    }),
-    prisma.invoice.findMany({
-      orderBy: { updatedAt: "desc" },
-      take: 12,
-      include: {
-        company: {
-          select: { companyName: true },
-        },
-      },
-    }),
-    prisma.paymentProviderEvent.findMany({
-      where: {
-        provider: "STRIPE",
-      },
-      orderBy: { receivedAt: "desc" },
-      take: 20,
-      include: {
-        company: {
-          select: { companyName: true },
-        },
-      },
-    }),
-  ]);
+  const { subscriptions, payments, invoices, events, degraded } = await getBillingSnapshot();
 
   const failedEvents = events.filter((event) => event.status === PaymentProviderEventStatus.FAILED);
   const failedPayments = payments.filter((payment) => payment.status === PaymentStatus.FAILED);
@@ -95,6 +89,11 @@ export default async function AdminBillingPage() {
 
         <section className="rounded-[24px] border border-slate-200 bg-white p-6">
           <h2 className="text-xl font-semibold text-slate-900">Subscriptions</h2>
+          {degraded ? (
+            <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              Billing tables are not available yet in this environment. Showing empty state until migrations are applied.
+            </p>
+          ) : null}
           <div className="mt-4 overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200 text-sm">
               <thead>
@@ -191,4 +190,87 @@ export default async function AdminBillingPage() {
       </div>
     </DashboardShell>
   );
+}
+
+async function getBillingSnapshot(): Promise<BillingSnapshot> {
+  try {
+    const [subscriptions, payments, invoices, events] = await Promise.all([
+      prisma.subscription.findMany({
+        orderBy: { updatedAt: "desc" },
+        take: 12,
+        include: {
+          company: {
+            select: { companyName: true },
+          },
+        },
+      }),
+      prisma.payment.findMany({
+        orderBy: { updatedAt: "desc" },
+        take: 12,
+        include: {
+          company: {
+            select: { companyName: true },
+          },
+        },
+      }),
+      prisma.invoice.findMany({
+        orderBy: { updatedAt: "desc" },
+        take: 12,
+        include: {
+          company: {
+            select: { companyName: true },
+          },
+        },
+      }),
+      prisma.paymentProviderEvent.findMany({
+        where: {
+          provider: "STRIPE",
+        },
+        orderBy: { receivedAt: "desc" },
+        take: 20,
+        include: {
+          company: {
+            select: { companyName: true },
+          },
+        },
+      }),
+    ]);
+
+    return {
+      subscriptions,
+      payments,
+      invoices,
+      events,
+      degraded: false,
+    };
+  } catch (error) {
+    logBillingDataError(error);
+
+    return {
+      subscriptions: [],
+      payments: [],
+      invoices: [],
+      events: [],
+      degraded: true,
+    };
+  }
+}
+
+function logBillingDataError(error: unknown): void {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    const tableMissing = error.code === "P2021";
+    console.error("[billing] prisma query failed", {
+      code: error.code,
+      tableMissing,
+      model: error.meta?.modelName,
+    });
+    return;
+  }
+
+  if (error instanceof Error) {
+    console.error("[billing] unexpected data error", { message: error.message });
+    return;
+  }
+
+  console.error("[billing] unknown data error");
 }
